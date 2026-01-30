@@ -6,25 +6,14 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 01:41:47 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/27 05:50:59 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/01/29 20:02:58 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP 
 
-# include <iostream>
-# include <string>
-# include <vector>
-# include <sys/socket.h>
-# include <sys/types.h>
-# include <netinet/in.h>
-# include <fcntl.h>
-# include <unistd.h>
-# include <arpa/inet.h>
-# include <poll.h>
-# include <csignal>
-# include <cstring>
+# include "messages.hpp"
 # include "client.hpp"
 # include "channel.hpp"
 # include "utils.hpp"
@@ -41,18 +30,22 @@ class Server
 		std::vector<std::string>	cmdlist;
 
 		std::string			pass;
-		int					port;
+		std::string			port;
 		int					serverSocket;
 		static bool			signal;
 
 		void		cmdlistInit(std::vector<std::string>& cmdl);
 	public:
 		Server();
-		Server(int pooort, const std::string paaasss);
+		Server(std::string pooort, const std::string paaasss);
 		Server(const Server &other);
 		Server &operator=(const Server &other);
 		~Server();
 	
+		std::vector<Channel>	getChannelList();
+		Channel&				createNewChannel(std::string cname);
+		Channel* 				findChannel(std::string& name);
+
 		void		Init();
 		void		CloseServer();
 		void		CloseClient(int fd);
@@ -61,8 +54,7 @@ class Server
 		void		AcceptClient();
 		void		ReceiveData(int fd);
 
-		void		newChannel(std::string name);
-		void		handlecmd(std::string c, Client& cli);
+		void					handlecmd(std::string c, Client& cli);
 };
 
 

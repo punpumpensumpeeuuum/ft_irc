@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/27 06:18:54 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/01/30 06:35:29 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,19 @@ bool	Server::signal = true;
 
 void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 {
-	cmdl.push_back("JOIN");
-	cmdl.push_back("INVITE");
-	cmdl.push_back("USER");
-	cmdl.push_back("NICK");
+	cmdl.push_back("JOIN"); // 0
+	cmdl.push_back("PART"); // 1
+	cmdl.push_back("QUIT"); // 2
+	cmdl.push_back("NICK"); // 3
+	cmdl.push_back("USER"); // 4
+	cmdl.push_back("MSG"); // 5
+	cmdl.push_back("PING"); // 6
+	cmdl.push_back("KICK"); // 7
+	cmdl.push_back("INVITE"); // 8
+	cmdl.push_back("TOPIC"); // 9
+	cmdl.push_back("MODE"); // 10
+	cmdl.push_back("PASS"); // 11
+	cmdl.push_back("HELP"); // 12
 }
 
 Server::Server()
@@ -28,7 +37,7 @@ Server::Server()
 	cmdlistInit(cmdlist);
 }
 
-Server::Server(int pooort, const std::string paaasss)
+Server::Server(std::string pooort, const std::string paaasss)
 {
 	this->serverSocket = -1;
 	port = pooort;
@@ -51,6 +60,12 @@ Server::~Server()
 {
 	CloseServer();
 }
+
+std::vector<Channel>	Server::getChannelList()
+{
+	return (this->channelist);
+}
+
 
 void	Server::SignalHandler(int signum)
 {
@@ -109,11 +124,10 @@ void Server::CloseClient(int fd)
 
 void	Server::Init()
 {
-	this->port = 5555;
 	struct sockaddr_in add;
 	struct pollfd NewPoll;
 	add.sin_family = AF_INET;
-	add.sin_port = htons(this->port);
+	add.sin_port = htons(atoi(port.c_str()));
 	add.sin_addr.s_addr = INADDR_ANY;
 
 	serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -138,7 +152,7 @@ void	Server::Init()
 
 	while (Server::signal)
 	{
-		if((poll(&fds[0],fds.size(),-1) == -1))
+		if((poll(fds.data(),fds.size(),-1) == -1))
 		{
 			if (!Server::signal)
     		    break; 
@@ -160,7 +174,7 @@ void	Server::Init()
 
 void	Server::AcceptClient()
 {
-	Client cli;
+	Client cli(*this, this->serverSocket);
 	struct sockaddr_in cliadd;
 	struct pollfd NewPoll;
 	socklen_t len = sizeof(cliadd);
@@ -195,6 +209,9 @@ void	Server::ReceiveData(int fd)
 	Client* cli = getClientByFd(fd);
 	if (!cli)
 		return;
+	// if not authenticated 
+	// pedir pa por a pass o nick e o user
+	// cada vez que lmandar 1 comando novo
 	cli->appendMessage(std::string(buffer, bytes));
 	while (cli->hasLine())
 	{
@@ -226,7 +243,33 @@ void	Server::handlecmd(std::string c, Client& cli)
 	case 0: 
 		cli.join();
 		break;
+	case 3:
+		cli.user();
+		break;
+	case 4:
+		cli.nick();
+		break;	
+	case 11:
+		cli.pass();
+		break;
 	default:
 		break;
 	}
+}
+
+Channel&	Server::createNewChannel(std::string cname)
+{
+	Channel nChannel(cname);
+	channelist.push_back(nChannel);
+	return (channelist.back());
+}
+
+Channel* Server::findChannel(std::string& name)
+{
+    for (size_t i = 0; i < channelist.size(); i++)
+    {
+        if (channelist[i].getName() == name)
+            return (&channelist[i]);
+    }
+    return (NULL);
 }
