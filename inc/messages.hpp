@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:59:52 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/30 05:13:42 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/01/31 02:47:28 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ enum messages
 	YOU_WERE_INVITED,
 	INVITE_SUCCESS,
 	MODE_UPDATED,
-	WAIT_FOR_PASS,
-	WAIT_FOR_NICK,
-	WAIT_FOR_USER,
 };
 
 enum errors

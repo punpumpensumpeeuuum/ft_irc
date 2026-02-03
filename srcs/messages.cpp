@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/30 05:15:25 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/02 23:17:05 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,14 +121,55 @@ void	Client::printMessage(int nb)
 		case ERR_NO_MESSAGE_GIVEN:
 			oss << "No message given";
 			break;
-		case WAIT_FOR_PASS:
-			oss << "Please insert the server password";
+		case PASSWORD_SUCCESS:
+			oss << "001: Correct Password";
 			break;
-		case WAIT_FOR_NICK:
-			oss << "Please assign your nickname";
-			break;		
-		case WAIT_FOR_USER:
-			oss << "Please assign your realname";
+		case NICKNAME_SUCCESS:
+			oss << "001: Nickname assigned: " << cnick;
+			break;
+		case USERNAME_SUCCESS:
+			oss << "001: Username assigned: " << cuser << "\n";
+			oss << "001: Real name assigned: " << crealname;
+			break;
+		case LOGIN_SUCCESS:
+			oss << "001: Login successful welcome to the server: " << crealname;
+			break;
+		case CHANNEL_CREATED:
+			oss << "Channel created: " << arguments[0];
+			break;
+		case JOINED_CHANNEL:
+			oss << "You just joined a channel: " << arguments[0];
+			break;
+		case CHANNEL_OP:
+			oss << "You just became a channel OP: " << arguments[0];
+			break;
+		case LEAVE_CHANNEL:
+			oss << "You left the channel: " << arguments[0];
+			break;
+		case SHOWING_CHANNEL_TOPIC:
+			oss << " You are seeing the topic of the channel: " << arguments[0];
+			break;
+		case CHANNEL_TOPIC_CHANGED:
+			oss << "You are changing the topic of the channel: " << arguments[0] << "\n";
+			oss << "Now it is: " << arguments[1];
+			break;
+		case KICK_SOMEONE:
+			oss << "You just kicked: " << arguments[1] << "\n";
+			oss << "He is no longer on channel: " << arguments[0];
+			break;
+		case KICK_SOMEONE_MESSAGE:
+			oss << "You just kicked: " << arguments[1] << "\n";
+			oss << "He is no longer on channel: " << arguments[0] << "\n";
+			oss << "Kick message: " << arguments[2];
+			break;
+		case INVITE_SUCCESS:
+			oss << "You invited " << arguments[0] << " to channel: " << arguments[1];
+			break;
+		case YOU_WERE_INVITED:
+			oss << "You were invited by " << arguments[0] << " to join channel: " << arguments[1];
+			break;
+		case MODE_UPDATED:
+			oss << "Channel mode updated: " << arguments[0] << " → " << arguments[1];
 			break;
 	}
 	messageClient(oss.str());

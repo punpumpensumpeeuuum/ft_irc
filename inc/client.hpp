@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/30 06:34:22 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/01/31 03:32:52 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ class Client
 {
 	private:
 		int 						fd;
-		std::string					nick;
-		std::string					user;
-		std::string					realname;
+		std::string					cnick;
+		std::string					cuser;
+		std::string					crealname;
 		std::string					UserIP;
 		std::string					message;
 		bool 						passcheck;
@@ -58,11 +58,18 @@ class Client
 		bool			hasLine();
 		std::string		takeCmd();
 		std::string		takeLine();
+		void			clearbuff();
 
+		void		handlecmd(std::string c);
 		bool		channelexist(std::string channelname);
 		void		join();
+		
+		bool		validName(std::string str);
+		bool		nickAlreadyExists(std::string str);
 		void		nick();
+		
 		void		user();
+		
 		void		pass();
 };
 

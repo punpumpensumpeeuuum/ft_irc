@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/30 06:35:29 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/02 23:23:37 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ void	Server::ReceiveData(int fd)
 	ssize_t bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
 	if (bytes <= 0)
 	{
-		CloseClient(fd);
+		handleQuit(fd);
 		return;
 	}
 	Client* cli = getClientByFd(fd);
@@ -218,44 +218,46 @@ void	Server::ReceiveData(int fd)
 		std::string cmd = cli->takeCmd();
 		if (cmd.empty())
 			continue;
-		handlecmd(cmd, *cli);
+		cli->handlecmd(cmd);
 	}
 }
 
-
-void	Server::handlecmd(std::string c, Client& cli)
+std::vector<std::string>	Server::getCmdList()
 {
-	size_t i;
-	if (c.size() < 1)
-		return ;
-	for (i = 0; i < cmdlist.size(); i++)
+	return (this->cmdlist);
+}
+
+std::vector<std::string>	Server::getcNickList()
+{
+	return (this->cNicklist);
+}
+
+void	Server::setNewcNick(std::string oldnick, std::string nnick)
+{
+	if (oldnick.empty())
+	{
+		std::vector<std::string>::iterator it = std::find(cNicklist.begin(), cNicklist.end(), oldnick);
+		if (it != cNicklist.end())
+			cNicklist.erase(it);
+	}
+	cNicklist.push_back(nnick);
+}
+
+std::string		Server::getPass()
+{
+	return (this->pass);
+}
+
+size_t		Server::findCmd(std::string c)
+{
+	for (size_t i = 0; i < cmdlist.size(); i++)
 	{
 		if (cmdlist[i] == c)
-			break;
+			return (i);
 	}
-	if (i >= cmdlist.size()) 
-	{
-		std::cout << "Command not found >" << c << std::endl;
-		return;
-	}
-	switch (i)
-	{
-	case 0: 
-		cli.join();
-		break;
-	case 3:
-		cli.user();
-		break;
-	case 4:
-		cli.nick();
-		break;	
-	case 11:
-		cli.pass();
-		break;
-	default:
-		break;
-	}
+	return (50);
 }
+
 
 Channel&	Server::createNewChannel(std::string cname)
 {
@@ -264,12 +266,40 @@ Channel&	Server::createNewChannel(std::string cname)
 	return (channelist.back());
 }
 
-Channel* Server::findChannel(std::string& name)
+Channel* Server::findChannel(const std::string& name)
 {
-    for (size_t i = 0; i < channelist.size(); i++)
-    {
-        if (channelist[i].getName() == name)
-            return (&channelist[i]);
-    }
-    return (NULL);
+	for (size_t i = 0; i < channelist.size(); i++)
+	{
+		if (channelist[i].getName() == name)
+			return (&channelist[i]);
+	}
+	return (NULL);
+}
+
+void	Server::handleQuit(int fd)
+{
+	std::string		nick;
+	for (std::vector<Client>::iterator it = clientlist.begin(); it != clientlist.end(); ++it)
+	{
+		if (it->getFd() == fd)
+		{
+			nick = it->getNick();
+			clientlist.erase(it);
+			CloseClient(fd);
+			break ;
+		}
+	}
+	std::cout << "Client <" << fd << "> disconnected" << std::endl;
+	close(fd);
+	for (size_t i = 0; i < fds.size(); ++i)
+	{
+		if (fds[i].fd == fd)
+		{
+			fds.erase(fds.begin() + i);
+			break;
+		}
+	}
+	std::vector<std::string>::iterator itNick = std::find(cNicklist.begin(), cNicklist.end(), nick);
+	if (itNick != cNicklist.end())
+		cNicklist.erase(itNick);
 }
