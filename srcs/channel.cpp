@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/03 01:57:33 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/04 00:26:12 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,6 @@ void		Channel::setOp(Client* cli)
 
 bool		Channel::isAlreadyMember(Client *cli)
 {
-	// for (size_t i = 0; i < clientmembers.size(); i++)
-	// {
-	// 	if (clientmembers[i] == cli)
-	// 		return (true);
-	// }
-	// return (false);
 	if (clientmembers.find(cli) != clientmembers.end())
 		return (true);
 	return (false);
@@ -152,4 +146,9 @@ int			Channel::getUserCount()
 void		Channel::removeInvited(Client *cli)
 {
 	invitedmembers.erase(cli);
+}
+
+std::set<Client*>	Channel::getClients()
+{
+	return (clientmembers);
 }

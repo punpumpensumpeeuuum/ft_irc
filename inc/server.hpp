@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 01:41:47 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/02 23:23:52 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/04 00:02:50 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class Server
 		Server &operator=(const Server &other);
 		~Server();
 
+		std::string					getHostname();
 		std::string					getPass();
 		std::vector<std::string>	getCmdList();
 		std::vector<std::string>	getcNickList();

@@ -6,65 +6,11 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/03 01:56:16 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/05 19:02:35 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/client.hpp"
-
-void	Client::join()
-{
-	if (!getAuthenticated())
-		return printMessage(ERR_NOT_AUTHENTICATED);
-	if (arguments.size() != 1 && arguments.size() != 2)
-		return printMessage(ERR_NEED_MORE_PARAMS);
-	std::string cname = arguments[0];
-	if (cname.empty() || cname[0] != '#')
-		return printMessage(ERR_BAD_CHAN_MASK);
-	Channel*	channel = server.findChannel(cname);
-	if (channel)
-	{
-		if (channel->isAlreadyMember(this))
-			return printMessage(ERR_USER_ON_CHANNEL);
-		if (channel->hasPassword())
-		{
-			if (arguments.size() < 2)
-				return printMessage(ERR_BAD_CHANNEL_KEY);
-			std::string	pass = arguments[1];
-			if (pass != channel->getPassword())
-				return printMessage(ERR_BAD_CHANNEL_KEY);
-		}
-		if (!channel->isInvited(this) && (channel->isInviteOnly() || channel->isKicked(this)))
-			return printMessage(ERR_INVITE_ONLY_CHAN);
-		if (channel->getUserLimit() > 0 && channel->getUserCount() >= channel->getUserLimit())
-			return printMessage(ERR_CHANNEL_IS_FULL);
-		channel->addClient(this);
-		channel->removeInvited(this);
-		printMessage(JOINED_CHANNEL);
-	}
-	else
-	{
-		channel = &server.createNewChannel(cname);
-		std::cout << channel->getName() << std::endl;
-		channel->addClient(this);
-		channel->setOp(this);
-		printMessage(CHANNEL_CREATED);
-		printMessage(JOINED_CHANNEL);
-		printMessage(CHANNEL_OP);
-	}
-}
-
-bool	Client::channelexist(std::string channelname)
-{
-	const std::vector<Channel> &channel_list = server.getChannelList();
-	std::vector<Channel>::const_iterator it;
-	for (it = channel_list.begin(); it != channel_list.end(); ++it)
-	{
-		if (it->getName() == channelname)
-			return (true);
-	}
-	return (false);
-}
 
 void	Client::pass()
 {
@@ -162,6 +108,96 @@ void	Client::user()
 		authenticatedcheck = true;
 		printMessage(LOGIN_SUCCESS);
 	}
+}
+
+void	Client::join()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() != 1 && arguments.size() != 2)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string cname = arguments[0];
+	if (cname.empty() || cname[0] != '#')
+		return printMessage(ERR_BAD_CHAN_MASK);
+	Channel*	channel = server.findChannel(cname);
+	if (channel)
+	{
+		if (channel->isAlreadyMember(this))
+			return printMessage(ERR_USER_ON_CHANNEL);
+		if (channel->hasPassword())
+		{
+			if (arguments.size() < 2)
+				return printMessage(ERR_BAD_CHANNEL_KEY);
+			std::string	pass = arguments[1];
+			if (pass != channel->getPassword())
+				return printMessage(ERR_BAD_CHANNEL_KEY);
+		}
+		if (!channel->isInvited(this) && (channel->isInviteOnly() || channel->isKicked(this)))
+			return printMessage(ERR_INVITE_ONLY_CHAN);
+		if (channel->getUserLimit() > 0 && channel->getUserCount() >= channel->getUserLimit())
+			return printMessage(ERR_CHANNEL_IS_FULL);
+		channel->addClient(this);
+		channel->removeInvited(this);
+		joiningMessage(cname, channel);
+		printMessage(JOINED_CHANNEL);
+	}
+	else
+	{
+		channel = &server.createNewChannel(cname);
+		channel->addClient(this);
+		channel->setOp(this);
+		joiningMessage(cname, channel);
+		printMessage(CHANNEL_CREATED);
+		printMessage(JOINED_CHANNEL);
+		printMessage(CHANNEL_OP);
+	}
+}
+
+std::string		Client::getFullMask()
+{
+	return (cnick + "!" + cuser + "@" + userIP);
+}
+
+void Client::joiningMessage(const std::string& cname, Channel *channel)
+{
+	std::string mask = getFullMask();
+	std::string hostname = server.getHostname();
+	std::string join_msg = ":" + mask + " JOIN :" + cname + "\r\n";
+	const std::set<Client*>& clients = channel->getClients();
+
+	for (std::set<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+	{
+		Client* client = *it;
+		client->messageClient(join_msg);
+	}
+	this->messageClient(":" + hostname + " 324 " + cnick + " " + cname + " +nt\r\n");
+
+	std::ostringstream ts;
+	ts << ":" << hostname << " 329 " << cnick << " " << cname << " " << std::time(0) << "\r\n";
+	this->messageClient(ts.str());
+
+	std::string channelnames;
+	for (std::set<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
+		Client* client = *it;
+		if (!channelnames.empty())
+			channelnames += " ";
+		if (channel->isOperator(client))
+			channelnames += "@" + client->getNick();
+		else
+			channelnames += client->getNick();
+	}
+	this->messageClient(":" + hostname + " 353 " + cnick + " = " + cname + " :" + channelnames + "\r\n");
+	this->messageClient(":" + hostname + " 366 " + cnick + " " + cname + " :End of /NAMES list.\r\n");
+}
+
+
+void	Client::ping()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() != 1)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	return printMessage(PONG);
 }
 
 // void	Client::quit()

@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/02 23:23:37 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/05 18:53:16 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@ bool	Server::signal = true;
 
 void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 {
-	cmdl.push_back("JOIN"); // 0
-	cmdl.push_back("PART"); // 1
-	cmdl.push_back("QUIT"); // 2
-	cmdl.push_back("NICK"); // 3
-	cmdl.push_back("USER"); // 4
-	cmdl.push_back("MSG"); // 5
-	cmdl.push_back("PING"); // 6
-	cmdl.push_back("KICK"); // 7
-	cmdl.push_back("INVITE"); // 8
-	cmdl.push_back("TOPIC"); // 9
-	cmdl.push_back("MODE"); // 10
-	cmdl.push_back("PASS"); // 11
-	cmdl.push_back("HELP"); // 12
+	cmdl.push_back("HELP"); // 0 
+	cmdl.push_back("PASS"); // 1 x
+	cmdl.push_back("NICK"); // 2 x
+	cmdl.push_back("USER"); // 3 x
+	cmdl.push_back("JOIN"); // 4 x
+	cmdl.push_back("QUIT"); // 5 
+	cmdl.push_back("PART"); // 6
+	cmdl.push_back("MSG"); // 7
+	cmdl.push_back("PING"); // 8
+	cmdl.push_back("KICK"); // 9
+	cmdl.push_back("INVITE"); // 10
+	cmdl.push_back("TOPIC"); // 11
+	cmdl.push_back("MODE"); // 12
 }
 
 Server::Server()
@@ -302,4 +302,13 @@ void	Server::handleQuit(int fd)
 	std::vector<std::string>::iterator itNick = std::find(cNicklist.begin(), cNicklist.end(), nick);
 	if (itNick != cNicklist.end())
 		cNicklist.erase(itNick);
+}
+
+std::string		Server::getHostname()
+{
+	char	buffer[256];
+	if (gethostname(buffer, sizeof(buffer)) == 0)
+		return (std::string(buffer));
+	else
+		return ("Unknown");
 }

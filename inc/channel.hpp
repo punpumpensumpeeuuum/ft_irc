@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/02 20:35:09 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/04 00:25:08 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,21 @@ public:
 		Channel &operator=(const Channel &other);
 		~Channel();
 
-		std::string		getName() const;
-		bool			isOperator(Client* cli);
-		void			addClient(Client* cli);
-		void			setOp(Client* cli);
-		bool			isAlreadyMember(Client* cli);
-		bool			isInviteOnly();
-		bool			isInvited(Client *cli);
-		bool			isKicked(Client *cli);
-		bool			hasPassword();
-		std::string		getPassword();
-		int				getUserLimit();
-		int				getUserCount();
+		std::set<Client*>	getClients();
+		std::string			getName() const;
+		bool				isOperator(Client* cli);
+		void				addClient(Client* cli);
+		void				setOp(Client* cli);
+		bool				isAlreadyMember(Client* cli);
+		bool				isInviteOnly();
+		bool				isInvited(Client *cli);
+		bool				isKicked(Client *cli);
+		bool				hasPassword();
+		std::string			getPassword();
+		int					getUserLimit();
+		int					getUserCount();
 
-		void			removeInvited(Client *cli);
+		void				removeInvited(Client *cli);
 };
 
 #endif

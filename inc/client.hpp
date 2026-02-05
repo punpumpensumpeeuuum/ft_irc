@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/31 03:32:52 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/05 18:54:54 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "server.hpp"
 
 class Server;
+class Channel;
 
 class Client
 {
@@ -26,7 +27,7 @@ class Client
 		std::string					cnick;
 		std::string					cuser;
 		std::string					crealname;
-		std::string					UserIP;
+		std::string					userIP;
 		std::string					message;
 		bool 						passcheck;
 		bool 						nickcheck;
@@ -41,6 +42,7 @@ class Client
 		Client &operator=(const Client &other);
 		~Client();
 
+		void			resolveHostname();
 		void 			printMessage(int nb);
 		void			messageClient(std::string mes);
 		void			messageClient(int nb);
@@ -60,17 +62,21 @@ class Client
 		std::string		takeLine();
 		void			clearbuff();
 
-		void		handlecmd(std::string c);
-		bool		channelexist(std::string channelname);
-		void		join();
+		void			pass();
+
+		bool			validName(std::string str);
+		bool			nickAlreadyExists(std::string str);
+		void			nick();
 		
-		bool		validName(std::string str);
-		bool		nickAlreadyExists(std::string str);
-		void		nick();
-		
-		void		user();
-		
-		void		pass();
+		void			user();
+
+		void			handlecmd(std::string c);
+		bool			channelexist(std::string channelname);
+		std::string		getFullMask();
+		void			joiningMessage(const std::string& cname, Channel *channel);
+		void			join();
+
+		void			ping();
 };
 
 

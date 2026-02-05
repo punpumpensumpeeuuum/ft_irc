@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/01 19:05:00 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/05 18:54:07 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 Client::Client(Server &ser, int cc) : server(ser), csocket(cc)
 {
+	resolveHostname();
 	this->cnick = "Random";
 	this->fd = 0;
-	this->UserIP = "1.0.0.0";
+	this->userIP = "1.0.0.0";
 	this->authenticatedcheck = false;
 	this->passcheck = false;
 	this->nickcheck = false;
@@ -29,7 +30,7 @@ Client::Client(const Client &other) : server(other.server), csocket(other.csocke
 {
 	fd = other.fd;
 	cnick = other.cnick;
-	UserIP = other.UserIP;
+	userIP = other.userIP;
 	message = other.message;
 	arguments = other.arguments;
 	authenticatedcheck = other.authenticatedcheck;
@@ -46,7 +47,7 @@ Client &Client::operator=(const Client &other)
 	{
 		fd = other.fd;
 		cnick = other.cnick;
-		UserIP = other.UserIP;
+		userIP = other.userIP;
 		message = other.message;
 		arguments = other.arguments;
 		csocket = other.csocket;
@@ -57,6 +58,17 @@ Client &Client::operator=(const Client &other)
 Client::~Client()
 {
 	// free things ig
+}
+
+void	Client::resolveHostname()
+{
+	struct sockaddr_in addr;
+	socklen_t addr_len = sizeof(addr);
+
+	if (getpeername(csocket, (struct sockaddr*)&addr, &addr_len) == 0)
+		userIP = inet_ntoa(addr.sin_addr);
+	else
+		userIP = "unknown";
 }
 
 int	Client::getFd()
@@ -71,12 +83,12 @@ void	Client::setFd(int n)
 
 std::string	Client::getIp()
 {
-	return (this->UserIP);
+	return (this->userIP);
 }
 
 void	Client::setIp(std::string i)
 {
-	this->UserIP = i;
+	this->userIP = i;
 }
 
 std::string	Client::getNick()
@@ -135,6 +147,18 @@ void	Client::clearbuff()
 	this->arguments.clear();
 }
 
+bool	Client::channelexist(std::string channelname)
+{
+	const std::vector<Channel> &channel_list = server.getChannelList();
+	std::vector<Channel>::const_iterator it;
+	for (it = channel_list.begin(); it != channel_list.end(); ++it)
+	{
+		if (it->getName() == channelname)
+			return (true);
+	}
+	return (false);
+}
+
 void	Client::handlecmd(std::string c)
 {
 	if (c.size() < 1)
@@ -142,17 +166,20 @@ void	Client::handlecmd(std::string c)
 	size_t i = server.findCmd(c);
 	switch (i)
 	{
-	case 0: 
-		join();
+	case 1:
+		pass();
 		break;
-	case 3:
+	case 2:
 		nick();
 		break;
-	case 4:
+	case 3:
 		user();
 		break;
-	case 11:
-		pass();
+	case 4: 
+		join();
+		break;
+	case 8:
+		ping();
 		break;
 	// case 13:
 	// 	help();
