@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/05 18:53:16 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/08 21:44:35 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("NICK"); // 2 x
 	cmdl.push_back("USER"); // 3 x
 	cmdl.push_back("JOIN"); // 4 x
-	cmdl.push_back("QUIT"); // 5 
+	cmdl.push_back("QUIT"); // 5 x
 	cmdl.push_back("PART"); // 6
 	cmdl.push_back("MSG"); // 7
 	cmdl.push_back("PING"); // 8

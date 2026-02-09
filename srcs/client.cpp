@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/05 18:54:07 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/09 04:05:42 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,9 @@ void	Client::handlecmd(std::string c)
 		break;
 	case 4: 
 		join();
+		break;
+	case 5:
+		quit();
 		break;
 	case 8:
 		ping();

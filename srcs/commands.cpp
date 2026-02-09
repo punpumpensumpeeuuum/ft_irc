@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/05 19:02:35 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/09 04:05:35 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,9 +163,9 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 	std::string mask = getFullMask();
 	std::string hostname = server.getHostname();
 	std::string join_msg = ":" + mask + " JOIN :" + cname + "\r\n";
-	const std::set<Client*>& clients = channel->getClients();
+	const std::vector<Client*>& clients = channel->getClients();
 
-	for (std::set<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+	for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it)
 	{
 		Client* client = *it;
 		client->messageClient(join_msg);
@@ -177,7 +177,7 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 	this->messageClient(ts.str());
 
 	std::string channelnames;
-	for (std::set<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
+	for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
 		Client* client = *it;
 		if (!channelnames.empty())
 			channelnames += " ";
@@ -200,20 +200,29 @@ void	Client::ping()
 	return printMessage(PONG);
 }
 
-// void	Client::quit()
-// {
-// 	if (arguments.size() < 1)
-// 		return printMessage(ERR_NEED_MORE_PARAMS);
-// 	if (arguments.size() > 1)
-// 		return printMessage(ERR_INVALID_PASSWORD);
-// 	if (arguments.front() != server.getPass())
-// 		return printMessage(ERR_PASSWD_MIS_MATCH);
-// 	passcheck = true;
-// 	printMessage(PASSWORD_SUCCESS);
-// 	if (nickcheck && usercheck)
-// 	{
-// 		authenticatedcheck = true;
-// 		printMessage(LOGIN_SUCCESS);
-// 	}
-// 	return ;
-// }
+void	Client::quit()
+{
+	std::string	reason;
+	if (arguments.size() < 1)
+		reason = "";
+	else
+	{
+		reason = arguments[0];
+		reason.insert(0, ":");
+	}
+    const std::vector<Channel>& channels = server.getChannelList();
+ 	for (size_t i = 0; i < channels.size(); ++i)
+	{
+        Channel* ch = const_cast<Channel*>(&channels[i]);
+		if (ch->isAlreadyMember(this))
+		{
+			std::string quitMessage = ":" + this->getNick() + "!" + cuser + "@" + crealname + " QUIT :" + reason + "\r\n";
+			ch->broadcast(quitMessage, this);
+			ch->removeClient(this);
+			Client* remainingClient = ch->getOnlyClient();
+			if (remainingClient && !ch->isOperator(remainingClient))
+				ch->setOp(remainingClient);
+		}
+	}
+	return ;
+}

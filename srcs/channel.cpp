@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/04 00:26:12 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/09 03:54:54 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Channel::Channel()
 {
 	name = "Channel";
 	password = "";
-	invinteonly = false;
+	inviteonly = false;
 	userlimit = 2;
 	userCount = 0;
 }
@@ -24,14 +24,14 @@ Channel::Channel()
 Channel::Channel(std::string n) : name(n)
 {
 	password = "";
-	invinteonly = false;
+	inviteonly = false;
 	userlimit = 2;
 	userCount = 0;
 }
 
 Channel::Channel(std::string n, std::string p) : name(n), password(p)
 {
-	invinteonly = false;
+	inviteonly = false;
 	userlimit = 2;
 	userCount = 0;
 }
@@ -40,7 +40,7 @@ Channel::Channel(const Channel &other)
 {
 	name = other.name;
 	password = other.password;
-	invinteonly = other.invinteonly;
+	inviteonly = other.inviteonly;
 	userlimit = other.userlimit;
 	userCount = other.userCount;
 	clientmembers = other.clientmembers;
@@ -55,7 +55,7 @@ Channel &Channel::operator=(const Channel &other)
 	{
 		name = other.name;
 		password = other.password;
-		invinteonly = other.invinteonly;
+		inviteonly = other.inviteonly;
 		userlimit = other.userlimit;
 		userCount = other.userCount;
 		clientmembers = other.clientmembers;
@@ -77,7 +77,7 @@ std::string		Channel::getName() const
 
 void		Channel::addClient(Client* cli)
 {
-	clientmembers.insert(cli);
+	clientmembers.push_back(cli);
 	userCount++;
 }
 
@@ -97,14 +97,12 @@ void		Channel::setOp(Client* cli)
 
 bool		Channel::isAlreadyMember(Client *cli)
 {
-	if (clientmembers.find(cli) != clientmembers.end())
-		return (true);
-	return (false);
+	return std::find(clientmembers.begin(), clientmembers.end(), cli) != clientmembers.end();
 }
 
 bool		Channel::isInviteOnly()
 {
-	return (this->invinteonly);
+	return (this->inviteonly);
 }
 
 bool		Channel::isInvited(Client *cli)
@@ -145,10 +143,40 @@ int			Channel::getUserCount()
 
 void		Channel::removeInvited(Client *cli)
 {
+	if (!cli)
+		return ;
 	invitedmembers.erase(cli);
 }
 
-std::set<Client*>	Channel::getClients()
+std::vector<Client*>&	Channel::getClients()
 {
 	return (clientmembers);
+}
+
+void		Channel::broadcast(std::string str, Client* except)
+{
+	for (std::vector<Client*>::iterator it = clientmembers.begin(); it != clientmembers.end(); ++it)
+    {
+		if (*it != except)
+			(*it)->messageClient(str);
+	}
+}
+
+void Channel::removeClient(Client *cli)
+{
+	std::vector<Client*>::iterator it = std::find(clientmembers.begin(), clientmembers.end(), cli);
+	if (it != clientmembers.end())
+	{
+		clientmembers.erase(it);
+		userCount--;
+	}
+	operators.erase(cli);
+	invitedmembers.erase(cli);
+}
+
+Client*		Channel::getOnlyClient()
+{
+	if (clientmembers.size() == 1)
+		return (clientmembers.front());
+	return (NULL);
 }
