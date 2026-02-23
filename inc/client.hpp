@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/08 23:06:33 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/23 04:20:20 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Client
 		bool 						nickcheck;
 		bool 						usercheck;
 		bool 						authenticatedcheck;
+		bool						disconnected;
 		std::vector<std::string>	arguments;
 		Server						&server;
 		int							csocket;
@@ -55,6 +56,7 @@ class Client
 		void			setNick(std::string n);
 		void			setIp(std::string i);
 		void			setFd(int n);
+		bool			isDisconnected();
 		
 		void			appendMessage(const std::string &buff);
 		bool			hasLine();

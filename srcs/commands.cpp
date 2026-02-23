@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/09 04:05:35 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/23 04:32:50 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ void	Client::ping()
 
 void	Client::quit()
 {
+	// ainda nao ta full funtional MAS ]e progresso
 	std::string	reason;
 	if (arguments.size() < 1)
 		reason = "";
@@ -210,13 +211,13 @@ void	Client::quit()
 		reason = arguments[0];
 		reason.insert(0, ":");
 	}
-    const std::vector<Channel>& channels = server.getChannelList();
+	std::string quitMessage = ":" + this->getNick() + "!" + cuser + "@" + userIP + " QUIT :" + reason + "\r\n";
+	const std::vector<Channel>& channels = server.getChannelList();
  	for (size_t i = 0; i < channels.size(); ++i)
 	{
-        Channel* ch = const_cast<Channel*>(&channels[i]);
+		Channel* ch = const_cast<Channel*>(&channels[i]);
 		if (ch->isAlreadyMember(this))
 		{
-			std::string quitMessage = ":" + this->getNick() + "!" + cuser + "@" + crealname + " QUIT :" + reason + "\r\n";
 			ch->broadcast(quitMessage, this);
 			ch->removeClient(this);
 			Client* remainingClient = ch->getOnlyClient();
@@ -224,5 +225,8 @@ void	Client::quit()
 				ch->setOp(remainingClient);
 		}
 	}
+	messageClient(":" + cnick + "!" + cuser + "@" + userIP + " QUIT " + reason + "\r\n");
+	disconnected = true;
+	// server.handleQuit(fd);
 	return ;
 }

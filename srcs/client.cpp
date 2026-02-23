@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/09 04:05:42 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/23 04:21:31 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Client::Client(Server &ser, int cc) : server(ser), csocket(cc)
 	this->usercheck = false;
 	this->cuser = "";
 	this->crealname = "";
+	this->disconnected = false;
 }
 
 Client::Client(const Client &other) : server(other.server), csocket(other.csocket)
@@ -39,6 +40,7 @@ Client::Client(const Client &other) : server(other.server), csocket(other.csocke
 	usercheck = other.usercheck;
 	cuser = other.cuser;
 	crealname = other.crealname;
+	disconnected = other.disconnected;
 }
 
 Client &Client::operator=(const Client &other)
@@ -51,6 +53,7 @@ Client &Client::operator=(const Client &other)
 		message = other.message;
 		arguments = other.arguments;
 		csocket = other.csocket;
+		disconnected = other.disconnected;
 	}
 	return (*this);
 }
@@ -99,6 +102,11 @@ std::string	Client::getNick()
 bool	Client::getAuthenticated()
 {
 	return (this->authenticatedcheck);
+}
+
+bool	Client::isDisconnected()
+{
+	return (this->disconnected);
 }
 
 void	Client::setNick(std::string n)

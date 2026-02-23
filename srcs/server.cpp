@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/08 21:44:35 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/23 04:31:39 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,9 @@ void	Server::AcceptClient()
 
 void	Server::ReceiveData(int fd)
 {
+	Client* cli = getClientByFd(fd);
+	if (!cli)
+		return;
 	char buffer[1024];
 	memset(buffer, 0, sizeof(buffer));
 	ssize_t bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
@@ -206,12 +209,6 @@ void	Server::ReceiveData(int fd)
 		handleQuit(fd);
 		return;
 	}
-	Client* cli = getClientByFd(fd);
-	if (!cli)
-		return;
-	// if not authenticated 
-	// pedir pa por a pass o nick e o user
-	// cada vez que lmandar 1 comando novo
 	cli->appendMessage(std::string(buffer, bytes));
 	while (cli->hasLine())
 	{
@@ -219,6 +216,11 @@ void	Server::ReceiveData(int fd)
 		if (cmd.empty())
 			continue;
 		cli->handlecmd(cmd);
+		if (cli->isDisconnected())
+		{
+			handleQuit(fd);
+			return ;
+		}
 	}
 }
 
