@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 01:41:47 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/04 00:02:50 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/24 05:09:13 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ class Server
 		void						AcceptClient();
 		void						ReceiveData(int fd);
 		void						handleQuit(int clientsocket);
+		void						removeChannel(std::string name);
 };
 
 

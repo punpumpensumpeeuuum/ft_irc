@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/09 03:54:57 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/24 05:10:39 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ class Channel
 {
 private:
 	std::vector<Client*>	clientmembers;
-	std::set<Client*>	invitedmembers;
-	std::set<Client*>	operators;
-	std::set<Client*>	kicked;
+	std::set<Client*>		invitedmembers;
+	std::set<Client*>		operators;
+	std::set<Client*>		kicked;
 	std::string				name;
 	std::string				password;
 	bool					inviteonly;
@@ -51,6 +51,7 @@ public:
 		bool					isInvited(Client *cli);
 		bool					isKicked(Client *cli);
 		bool					hasPassword();
+		bool					removeOp(Client *client);
 		std::string				getPassword();
 		int						getUserLimit();
 		int						getUserCount();

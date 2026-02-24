@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/23 04:32:50 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/24 05:15:49 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,6 @@ void	Client::ping()
 
 void	Client::quit()
 {
-	// ainda nao ta full funtional MAS ]e progresso
 	std::string	reason;
 	if (arguments.size() < 1)
 		reason = "";
@@ -227,6 +226,55 @@ void	Client::quit()
 	}
 	messageClient(":" + cnick + "!" + cuser + "@" + userIP + " QUIT " + reason + "\r\n");
 	disconnected = true;
-	// server.handleQuit(fd);
 	return ;
+}
+
+void	Client::part()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.empty())
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string chname = arguments[0];
+	std::string reason;
+	if (chname[0] != '#')
+		return printMessage(ERR_BAD_CHAN_MASK);
+	if (!channelexist(chname))
+		return printMessage(ERR_NO_SUCH_CHANNEL);
+
+	Channel *targetchannel = NULL;
+	const std::vector<Channel>& channels = server.getChannelList();
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		if (channels[i].getName() == chname)
+		{
+			targetchannel = const_cast<Channel*>(&channels[i]);
+			break;
+		}
+	}
+	if (!targetchannel || !targetchannel->isAlreadyMember(this))
+		return printMessage(ERR_NOT_ON_CHANNEL);
+	if (arguments.size() == 2)
+		reason = arguments[1];
+	std::string full_mask = getFullMask();
+	std::string part_message = ":" + full_mask + " PART " + chname;
+	if (!reason.empty())
+        part_message += " :" + reason;
+	part_message += "\r\n";
+	this->messageClient(part_message);
+    targetchannel->broadcast(part_message, NULL);
+    targetchannel->removeClient(this);
+	targetchannel->removeOp(this);
+	if (targetchannel->getUserCount() == 1)
+	{
+		Client* remainingClient = targetchannel->getOnlyClient();
+		if (remainingClient)
+			targetchannel->setOp(remainingClient);
+	}
+    if (targetchannel && targetchannel->getClients().empty())
+    {
+        server.removeChannel(chname);
+        targetchannel = NULL;
+    }
+    return printMessage(LEAVE_CHANNEL);;
 }

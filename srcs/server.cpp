@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/23 04:31:39 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/24 05:09:47 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("USER"); // 3 x
 	cmdl.push_back("JOIN"); // 4 x
 	cmdl.push_back("QUIT"); // 5 x
-	cmdl.push_back("PART"); // 6
+	cmdl.push_back("PART"); // 6 
 	cmdl.push_back("MSG"); // 7
 	cmdl.push_back("PING"); // 8
 	cmdl.push_back("KICK"); // 9
@@ -278,17 +278,16 @@ Channel* Server::findChannel(const std::string& name)
 	return (NULL);
 }
 
-void	Server::handleQuit(int fd)
+void Server::handleQuit(int fd)
 {
-	std::string		nick;
+	std::string nick;
 	for (std::vector<Client>::iterator it = clientlist.begin(); it != clientlist.end(); ++it)
 	{
 		if (it->getFd() == fd)
 		{
 			nick = it->getNick();
 			clientlist.erase(it);
-			CloseClient(fd);
-			break ;
+			break;
 		}
 	}
 	std::cout << "Client <" << fd << "> disconnected" << std::endl;
@@ -313,4 +312,17 @@ std::string		Server::getHostname()
 		return (std::string(buffer));
 	else
 		return ("Unknown");
+}
+
+void		Server::removeChannel(std::string name)
+{
+	std::vector<Channel>::iterator it;
+	for (it = channelist.begin(); it != channelist.end(); ++it)
+	{
+		if (it->getName() == name)
+		{
+			channelist.erase(it);
+			break;
+		}
+	}
 }
