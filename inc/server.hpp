@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 01:41:47 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/24 05:09:13 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/25 03:49:30 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Server
 {
 	private:
 		std::vector<struct pollfd>	fds;
-		std::vector<Client>			clientlist;
+		std::vector<Client*>		clientlist;
 		std::vector<Channel>		channelist;
 		std::vector<std::string>	cmdlist;
 		std::vector<std::string>	cNicklist;
@@ -51,6 +51,7 @@ class Server
 		void						setNewcNick(std::string oldnick, std::string nnick);
 		size_t						findCmd(std::string c);
 		std::vector<Channel>		getChannelList();
+		std::vector<Client*>			getClientList();
 		Channel&					createNewChannel(std::string cname);
 		Channel* 					findChannel(const std::string& name);
 
@@ -63,6 +64,7 @@ class Server
 		void						ReceiveData(int fd);
 		void						handleQuit(int clientsocket);
 		void						removeChannel(std::string name);
+		Client*						getClientByNick(std::string &nickanme);
 };
 
 

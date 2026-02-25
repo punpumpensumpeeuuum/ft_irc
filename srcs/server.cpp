@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/24 05:09:47 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/25 03:49:28 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@ bool	Server::signal = true;
 
 void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 {
-	cmdl.push_back("HELP"); // 0 
+	cmdl.push_back("HELP"); // 0 x
 	cmdl.push_back("PASS"); // 1 x
 	cmdl.push_back("NICK"); // 2 x
 	cmdl.push_back("USER"); // 3 x
 	cmdl.push_back("JOIN"); // 4 x
 	cmdl.push_back("QUIT"); // 5 x
-	cmdl.push_back("PART"); // 6 
+	cmdl.push_back("PART"); // 6 x
 	cmdl.push_back("MSG"); // 7
-	cmdl.push_back("PING"); // 8
+	cmdl.push_back("PING"); // 8 x
 	cmdl.push_back("KICK"); // 9
 	cmdl.push_back("INVITE"); // 10
 	cmdl.push_back("TOPIC"); // 11
@@ -80,8 +80,8 @@ Client*	Server::getClientByFd(int fd)
 
 	for (size_t i = 0; i < clientlist.size(); i++)
 	{
-		if (clientlist[i].getFd() == fd)
-			return (&clientlist[i]);
+		if (clientlist[i]->getFd() == fd)
+			return (clientlist[i]);
 	}
 	return (NULL);
 }
@@ -91,7 +91,7 @@ void	Server::CloseServer()
 	std::cout << "Closing Server" << std::endl;
 	for (size_t i = 0; i < clientlist.size(); i++)
 	{
-		int fd = clientlist[i].getFd();
+		int fd = clientlist[i]->getFd();
 		if (fd > 0)
 			close(fd);
 	}
@@ -114,7 +114,7 @@ void Server::CloseClient(int fd)
 	}
 	for (size_t i = 0; i < clientlist.size(); i++)
 	{
-		if (clientlist[i].getFd() == fd)
+		if (clientlist[i]->getFd() == fd)
 		{
 			clientlist.erase(clientlist.begin() + i);
 			break;
@@ -172,25 +172,29 @@ void	Server::Init()
 	}
 }
 
-void	Server::AcceptClient()
+void Server::AcceptClient()
 {
-	Client cli(*this, this->serverSocket);
 	struct sockaddr_in cliadd;
-	struct pollfd NewPoll;
 	socklen_t len = sizeof(cliadd);
-
 	int incofd = accept(serverSocket, (sockaddr *)&(cliadd), &len);
 	if (incofd == -1)
-		{std::cout << "accept() failed" << std::endl; return;}
+	{
+		std::cout << "accept() failed" << std::endl;
+		return;
+	}
 	if (fcntl(incofd, F_SETFL, O_NONBLOCK) == -1)
-		throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
+	{
+		close(incofd);
+		throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
+	}
+	Client* cli = new Client(*this, incofd);
+	cli->setFd(incofd);
+	cli->setIp(inet_ntoa((cliadd.sin_addr)));
+	clientlist.push_back(cli);
+	struct pollfd NewPoll;
 	NewPoll.fd = incofd;
 	NewPoll.events = POLLIN;
 	NewPoll.revents = 0;
-	
-	cli.setFd(incofd);
-	cli.setIp(inet_ntoa((cliadd.sin_addr)));
-	clientlist.push_back(cli);
 	fds.push_back(NewPoll);
 
 	std::cout << "Client <" << incofd << "> Connected" << std::endl;
@@ -232,6 +236,11 @@ std::vector<std::string>	Server::getCmdList()
 std::vector<std::string>	Server::getcNickList()
 {
 	return (this->cNicklist);
+}
+
+std::vector<Client*>			Server::getClientList()
+{
+	return (this->clientlist);
 }
 
 void	Server::setNewcNick(std::string oldnick, std::string nnick)
@@ -281,11 +290,12 @@ Channel* Server::findChannel(const std::string& name)
 void Server::handleQuit(int fd)
 {
 	std::string nick;
-	for (std::vector<Client>::iterator it = clientlist.begin(); it != clientlist.end(); ++it)
+	for (std::vector<Client*>::iterator it = clientlist.begin(); it != clientlist.end(); ++it)
 	{
-		if (it->getFd() == fd)
+		if ((*it)->getFd() == fd)
 		{
-			nick = it->getNick();
+			nick = (*it)->getNick();
+			delete *it;
 			clientlist.erase(it);
 			break;
 		}
@@ -325,4 +335,14 @@ void		Server::removeChannel(std::string name)
 			break;
 		}
 	}
+}
+
+Client* Server::getClientByNick(std::string& nickname) 
+{
+	for (size_t i = 0; i < clientlist.size(); i++)
+	{
+		if (clientlist[i]->getNick() == nickname)
+			return (clientlist[i]);
+	}
+	return (NULL);
 }

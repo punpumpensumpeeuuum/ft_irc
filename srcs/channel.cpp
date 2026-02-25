@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/24 05:10:55 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/25 03:22:41 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,11 @@ void		Channel::addClient(Client* cli)
 {
 	clientmembers.push_back(cli);
 	userCount++;
+}
+
+void	Channel::addKickClient(Client *cli)
+{
+	kicked.insert(cli);
 }
 
 bool	Channel::removeOp(Client *client)

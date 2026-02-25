@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/24 04:47:59 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/25 03:01:22 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ class Client
 		std::string		takeLine();
 		void			clearbuff();
 
+		void			help();
+
 		void			pass();
 
 		bool			validName(std::string str);
@@ -83,6 +85,8 @@ class Client
 		void			part();
 
 		void			ping();
+
+		void			kick();
 };
 
 

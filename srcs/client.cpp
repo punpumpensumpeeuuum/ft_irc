@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/24 04:47:26 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/25 03:01:10 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,9 @@ void	Client::handlecmd(std::string c)
 	size_t i = server.findCmd(c);
 	switch (i)
 	{
+	case 0:
+		help();
+		break;
 	case 1:
 		pass();
 		break;
@@ -195,9 +198,9 @@ void	Client::handlecmd(std::string c)
 	case 8:
 		ping();
 		break;
-	// case 13:
-	// 	help();
-	// 	break;
+	case 9:
+		kick();
+		break;
 	default:
 		printMessage(ERR_UNKNOWN_COMMAND);
 		break;

@@ -6,11 +6,42 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/24 05:15:49 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/02/25 03:42:33 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/client.hpp"
+
+void	Client::help()
+{
+	std::ostringstream oss;
+
+	oss << "PASS <password>					 	|| Enter server password" << std::endl;
+	oss << "NICK <nickname> 				 	|| Set a new nickname" << std::endl;
+	oss << "USER <username> * * : <realname> 	|| Set your username and real name" << std::endl;
+	if (this->authenticatedcheck == true)
+	{
+		oss << "NICK <nickname> 				 	|| Set a new nickname" << std::endl;
+		oss << "PING <token>					 	|| Ping the server" << std::endl;
+		oss << "QUIT <reason>					 	|| Leave the server" << std::endl;
+		oss << "JOIN <channel>			  		 	|| Join a channel" << std::endl;
+		oss << "PART <channel>					 	|| Leave a channel" << std::endl;
+		oss << "KICK <channel> <user>   		 	|| Kicks an user from a channel" << std::endl;
+		oss << "INVITE <nick> <channel>   		 	|| Invites an user to a channel" << std::endl;
+		oss << "MSG <nick/channel> : <message> 	 	|| Sends a message to an user or a channel" << std::endl;
+		oss << "MODE <channel> <modes> [params]  	|| Changes channel's mode" << std::endl;
+		oss << "Modes:	   						 	||" << std::endl;
+		oss << "	i - Invite only				 	||" << std::endl;
+		oss << "	t - Only ops can change topics	||" << std::endl;
+		oss << "	k - Set/remove channel password ||" << std::endl;
+		oss << "	l - Set/remove user limit		||" << std::endl;
+		oss << "	o - Give/take operator status   ||" << std::endl;
+		oss << "TOPIC <channel> 				  	|| Sees the channel's topic" << std::endl;
+		oss << "TOPIC <channel> <newtopic>			|| Change the channel's topic" << std::endl;
+	}
+
+	messageClient(oss.str());
+}
 
 void	Client::pass()
 {
@@ -259,11 +290,11 @@ void	Client::part()
 	std::string full_mask = getFullMask();
 	std::string part_message = ":" + full_mask + " PART " + chname;
 	if (!reason.empty())
-        part_message += " :" + reason;
+		part_message += " :" + reason;
 	part_message += "\r\n";
 	this->messageClient(part_message);
-    targetchannel->broadcast(part_message, NULL);
-    targetchannel->removeClient(this);
+	targetchannel->broadcast(part_message, NULL);
+	targetchannel->removeClient(this);
 	targetchannel->removeOp(this);
 	if (targetchannel->getUserCount() == 1)
 	{
@@ -271,10 +302,84 @@ void	Client::part()
 		if (remainingClient)
 			targetchannel->setOp(remainingClient);
 	}
-    if (targetchannel && targetchannel->getClients().empty())
+	if (targetchannel && targetchannel->getClients().empty())
+	{
+		server.removeChannel(chname);
+		targetchannel = NULL;
+	}
+	return printMessage(LEAVE_CHANNEL);;
+}
+
+void Client::kick()
+{
+    if (!getAuthenticated())
+        return printMessage(ERR_NOT_AUTHENTICATED);
+    if (arguments.size() < 2 || arguments.size() > 3)
+        return printMessage(ERR_NEED_MORE_PARAMS);
+    
+    std::string channelname = arguments[0];
+    std::string username = arguments[1];
+    std::string message = "";
+    if (arguments.size() == 3)
+        message = arguments[2];
+    
+    if (channelname[0] != '#')
+        return printMessage(ERR_BAD_CHAN_MASK);
+    if (!channelexist(channelname))
+        return printMessage(ERR_NO_SUCH_CHANNEL);
+    if (!nickAlreadyExists(username))
+        return printMessage(ERR_NO_SUCH_NICK);
+    
+    // Find the channel
+    Channel *channel = NULL;
+    const std::vector<Channel> &channels = server.getChannelList();
+    for (size_t i = 0; i < channels.size(); ++i)
     {
-        server.removeChannel(chname);
-        targetchannel = NULL;
+        if (channels[i].getName() == channelname)
+        {
+            channel = const_cast<Channel *>(&channels[i]);
+            break;
+        }
     }
-    return printMessage(LEAVE_CHANNEL);;
+    
+    // Check if YOU (the kicker) are on the channel
+    if (!channel->isAlreadyMember(this))
+        return printMessage(ERR_NOT_ON_CHANNEL);
+    
+    // Check if you're an operator
+    if (!channel->isOperator(this))
+        return printMessage(ERR_CHAN_OP_PRIV_NEEDED);
+    
+    // Find the target
+    Client *target = server.getClientByNick(username);
+    
+    // Check if target is on the channel
+    if (!target || !channel->isAlreadyMember(target))
+        return printMessage(ERR_USER_NOT_IN_CHANNEL);
+    
+    // Build kick message
+    std::string kick_msg = ":" + getFullMask() + " KICK " + channelname + " " + username;
+    if (!message.empty())
+        kick_msg += " :" + message;
+    kick_msg += "\r\n";
+    
+    // Broadcast to ALL channel members (including the target) BEFORE removing
+    channel->broadcast(kick_msg, NULL);
+    
+    // NOW remove the target from the channel
+    channel->addKickClient(target);
+    channel->removeClient(target);
+    
+    // If only one person left, make them operator
+    if (channel->getUserCount() == 1)
+    {
+        Client* remainingClient = channel->getOnlyClient();
+        if (remainingClient && !channel->isOperator(remainingClient))
+            channel->setOp(remainingClient);
+    }
+    
+    if (!message.empty())
+        printMessage(KICK_SOMEONE_MESSAGE);
+    else
+        printMessage(KICK_SOMEONE);
 }
