@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/25 03:42:33 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/17 19:20:33 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ void	Client::help()
 {
 	std::ostringstream oss;
 
-	oss << "PASS <password>					 	|| Enter server password" << std::endl;
-	oss << "NICK <nickname> 				 	|| Set a new nickname" << std::endl;
+	oss << "PASS <password>						|| Enter server password" << std::endl;
+	oss << "NICK <nickname>					 	|| Set a new nickname" << std::endl;
 	oss << "USER <username> * * : <realname> 	|| Set your username and real name" << std::endl;
 	if (this->authenticatedcheck == true)
 	{
-		oss << "NICK <nickname> 				 	|| Set a new nickname" << std::endl;
+		oss << "NICK <nickname>					 	|| Set a new nickname" << std::endl;
 		oss << "PING <token>					 	|| Ping the server" << std::endl;
 		oss << "QUIT <reason>					 	|| Leave the server" << std::endl;
 		oss << "JOIN <channel>			  		 	|| Join a channel" << std::endl;
@@ -221,16 +221,6 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 	this->messageClient(":" + hostname + " 366 " + cnick + " " + cname + " :End of /NAMES list.\r\n");
 }
 
-
-void	Client::ping()
-{
-	if (!getAuthenticated())
-		return printMessage(ERR_NOT_AUTHENTICATED);
-	if (arguments.size() != 1)
-		return printMessage(ERR_NEED_MORE_PARAMS);
-	return printMessage(PONG);
-}
-
 void	Client::quit()
 {
 	std::string	reason;
@@ -260,7 +250,7 @@ void	Client::quit()
 	return ;
 }
 
-void	Client::part()
+void	Client::part() // PART NAO FUNCIONA
 {
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
@@ -307,79 +297,109 @@ void	Client::part()
 		server.removeChannel(chname);
 		targetchannel = NULL;
 	}
-	return printMessage(LEAVE_CHANNEL);;
+	return printMessage(LEAVE_CHANNEL);
+}
+
+void	Client::ping()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() != 1)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	return printMessage(PONG);
+}
+
+void	Client::msg()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() < 2)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string	ambiguous = arguments[0];
+	if (!arguments[2].empty())
+		return printMessage(ERR_NO_MESSAGE_GIVEN);
+	std::string message;
+	for (size_t i = 1; i < arguments.size(); i++)
+	{
+		message += arguments[i];
+		if (i > 1)
+			message += " ";
+	}
+	std::string truemessage = ":" + getFullMask() + " MSG " + ambiguous + " :" + message + "\r\n";
+	if (ambiguous[0] == '#')
+	{
+		if (!channelexist(ambiguous))
+			return printMessage(ERR_NO_SUCH_CHANNEL);
+		Channel *chacha = server.findChannel(ambiguous);
+		if (chacha->isAlreadyMember(this))
+			return printMessage(ERR_USER_NOT_IN_CHANNEL);
+        const std::vector<Client*>& members = chacha->getClients();
+		for (size_t i = 0; i < members.size(); i++)
+		{
+			if (members[i] != this)
+			{
+				messageClient(truemessage);
+			}
+		}
+	}
+	else
+	{
+		Client *clicli = server.getClientByNick(ambiguous);
+		if (!clicli)
+			return printMessage(ERR_NO_SUCH_NICK);
+		messageClient(truemessage);
+	}
 }
 
 void Client::kick()
 {
-    if (!getAuthenticated())
-        return printMessage(ERR_NOT_AUTHENTICATED);
-    if (arguments.size() < 2 || arguments.size() > 3)
-        return printMessage(ERR_NEED_MORE_PARAMS);
-    
-    std::string channelname = arguments[0];
-    std::string username = arguments[1];
-    std::string message = "";
-    if (arguments.size() == 3)
-        message = arguments[2];
-    
-    if (channelname[0] != '#')
-        return printMessage(ERR_BAD_CHAN_MASK);
-    if (!channelexist(channelname))
-        return printMessage(ERR_NO_SUCH_CHANNEL);
-    if (!nickAlreadyExists(username))
-        return printMessage(ERR_NO_SUCH_NICK);
-    
-    // Find the channel
-    Channel *channel = NULL;
-    const std::vector<Channel> &channels = server.getChannelList();
-    for (size_t i = 0; i < channels.size(); ++i)
-    {
-        if (channels[i].getName() == channelname)
-        {
-            channel = const_cast<Channel *>(&channels[i]);
-            break;
-        }
-    }
-    
-    // Check if YOU (the kicker) are on the channel
-    if (!channel->isAlreadyMember(this))
-        return printMessage(ERR_NOT_ON_CHANNEL);
-    
-    // Check if you're an operator
-    if (!channel->isOperator(this))
-        return printMessage(ERR_CHAN_OP_PRIV_NEEDED);
-    
-    // Find the target
-    Client *target = server.getClientByNick(username);
-    
-    // Check if target is on the channel
-    if (!target || !channel->isAlreadyMember(target))
-        return printMessage(ERR_USER_NOT_IN_CHANNEL);
-    
-    // Build kick message
-    std::string kick_msg = ":" + getFullMask() + " KICK " + channelname + " " + username;
-    if (!message.empty())
-        kick_msg += " :" + message;
-    kick_msg += "\r\n";
-    
-    // Broadcast to ALL channel members (including the target) BEFORE removing
-    channel->broadcast(kick_msg, NULL);
-    
-    // NOW remove the target from the channel
-    channel->addKickClient(target);
-    channel->removeClient(target);
-    
-    // If only one person left, make them operator
-    if (channel->getUserCount() == 1)
-    {
-        Client* remainingClient = channel->getOnlyClient();
-        if (remainingClient && !channel->isOperator(remainingClient))
-            channel->setOp(remainingClient);
-    }
-    
-    if (!message.empty())
-        printMessage(KICK_SOMEONE_MESSAGE);
-    else
-        printMessage(KICK_SOMEONE);
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() < 2 || arguments.size() > 3)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string channelname = arguments[0];
+	std::string username = arguments[1];
+	std::string message = "";
+	if (arguments.size() == 3)
+		message = arguments[2];
+	if (channelname[0] != '#')
+		return printMessage(ERR_BAD_CHAN_MASK);
+	if (!channelexist(channelname))
+		return printMessage(ERR_NO_SUCH_CHANNEL);
+	if (!nickAlreadyExists(username))
+		return printMessage(ERR_NO_SUCH_NICK);
+	Channel *channel = NULL;
+	const std::vector<Channel> &channels = server.getChannelList();
+	for (size_t i = 0; i < channels.size(); ++i)
+	{
+		if (channels[i].getName() == channelname)
+		{
+			channel = const_cast<Channel *>(&channels[i]);
+			break;
+		}
+	}
+	if (!channel->isAlreadyMember(this))
+		return printMessage(ERR_NOT_ON_CHANNEL);
+	if (!channel->isOperator(this))
+		return printMessage(ERR_CHAN_OP_PRIV_NEEDED);
+	Client *target = server.getClientByNick(username);
+	if (!target || !channel->isAlreadyMember(target))
+		return printMessage(ERR_USER_NOT_IN_CHANNEL);
+	std::string kick_msg = ":" + getFullMask() + " KICK " + channelname + " " + username;
+	if (!message.empty())
+		kick_msg += " :" + message;
+	kick_msg += "\r\n";
+	channel->broadcast(kick_msg, NULL);
+	channel->addKickClient(target);
+	channel->removeClient(target);
+	if (channel->getUserCount() == 1)
+	{
+		Client* remainingClient = channel->getOnlyClient();
+		if (remainingClient && !channel->isOperator(remainingClient))
+			channel->setOp(remainingClient);
+	}
+	if (!message.empty())
+		printMessage(KICK_SOMEONE_MESSAGE);
+	else
+		printMessage(KICK_SOMEONE);
 }

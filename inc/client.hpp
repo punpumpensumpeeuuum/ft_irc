@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/25 03:01:22 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/17 15:52:38 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ class Client
 		void			quit();
 
 		void			part();
+
+		void			msg();
 
 		void			ping();
 
