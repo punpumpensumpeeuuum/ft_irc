@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:02:38 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 19:50:35 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class Client
 		int				getFd();
 		std::string		getIp();
 		std::string		getNick();
+		std::string		getCuser();
 		bool			getAuthenticated();
 		// std::string	getMessage();
 		// void			setMessage(std::string i);

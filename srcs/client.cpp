@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 18:38:36 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 19:50:49 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,11 @@ void	Client::setIp(std::string i)
 std::string	Client::getNick()
 {
 	return (this->cnick);
+}
+
+std::string	Client::getCuser()
+{
+	return (this->cuser);
 }
 
 bool	Client::getAuthenticated()

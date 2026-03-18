@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:38:14 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:43:34 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/18 19:51:56 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,4 @@ int main(int ac, char** av)
 	return (0);
 }
 
-// o join ta a ir buscar o nome da maquina e nao o user e tal, ver se ]e suposto
+// nao confio no q fiz, vou testar o join em casa :D chan

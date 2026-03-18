@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:43:22 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/18 19:49:57 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,15 +323,6 @@ void Server::handleQuit(int fd)
 	std::vector<std::string>::iterator itNick = std::find(cNicklist.begin(), cNicklist.end(), nick);
 	if (itNick != cNicklist.end())
 		cNicklist.erase(itNick);
-}
-
-std::string		Server::getHostname()
-{
-	char	buffer[256];
-	if (gethostname(buffer, sizeof(buffer)) == 0)
-		return (std::string(buffer));
-	else
-		return ("Unknown");
 }
 
 void		Server::removeChannel(std::string name)

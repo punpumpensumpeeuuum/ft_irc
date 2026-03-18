@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:18:15 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/18 19:51:27 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,13 +186,12 @@ void	Client::join()
 
 std::string		Client::getFullMask()
 {
-	return (cnick + "!" + cuser + "@" + userIP);
+	return (cnick + "~" + cuser + "@" + userIP);
 }
 
 void Client::joiningMessage(const std::string& cname, Channel *channel)
 {
 	std::string mask = getFullMask();
-	std::string hostname = server.getHostname();
 	std::string join_msg = ":" + mask + " JOIN: " + cname + "\r\n";
 	const std::vector<Client*>& clients = channel->getClients();
 
@@ -201,10 +200,10 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 		Client* client = *it;
 		client->messageClient(join_msg);
 	}
-	this->messageClient(":" + hostname + " 324 " + cnick + " " + cname + " +nt\r\n");
+	this->messageClient(":" + this->cuser + " 324 " + cnick + " " + cname + " +nt\r\n");
 
 	std::ostringstream ts;
-	ts << ":" << hostname << " 329 " << cnick << " " << cname << " " << std::time(0) << "\r\n";
+	ts << ":" << this->cuser << " 329 " << cnick << " " << cname << " " << std::time(0) << "\r\n";
 	this->messageClient(ts.str());
 
 	std::string channelnames;
@@ -217,8 +216,8 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 		else
 			channelnames += client->getNick();
 	}
-	this->messageClient(":" + hostname + " 353 " + cnick + " = " + cname + " :" + channelnames + "\r\n");
-	this->messageClient(":" + hostname + " 366 " + cnick + " " + cname + " :End of /NAMES list.\r\n");
+	this->messageClient(":" + this->cuser + " 353 " + cnick + " = " + cname + " :" + channelnames + "\r\n");
+	this->messageClient(":" + this->cuser + " 366 " + cnick + " " + cname + " :End of /NAMES list.\r\n");
 }
 
 void	Client::quit()

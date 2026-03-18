@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 01:41:47 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 03:10:46 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/18 19:49:32 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class Server
 		Server &operator=(const Server &other);
 		~Server();
 
-		std::string					getHostname();
+		std::string					getCuser();
 		std::string					getPass();
 		std::vector<std::string>	getCmdList();
 		std::vector<std::string>	getcNickList();
