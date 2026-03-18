@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/17 19:20:33 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 03:26:39 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ void	Client::join()
 	}
 	else
 	{
-		channel = &server.createNewChannel(cname);
+		channel = server.createNewChannel(cname);
 		channel->addClient(this);
 		channel->setOp(this);
 		joiningMessage(cname, channel);
@@ -228,14 +228,17 @@ void	Client::quit()
 		reason = "";
 	else
 	{
-		reason = arguments[0];
-		reason.insert(0, ":");
+		for (size_t i = 0; i < arguments.size(); i++)
+		{
+			reason += arguments[i];
+			reason += " ";
+		}
 	}
 	std::string quitMessage = ":" + this->getNick() + "!" + cuser + "@" + userIP + " QUIT :" + reason + "\r\n";
-	const std::vector<Channel>& channels = server.getChannelList();
+	std::vector<Channel*>& channels = server.getChannelList();
  	for (size_t i = 0; i < channels.size(); ++i)
 	{
-		Channel* ch = const_cast<Channel*>(&channels[i]);
+		Channel* ch = channels[i];
 		if (ch->isAlreadyMember(this))
 		{
 			ch->broadcast(quitMessage, this);
@@ -250,7 +253,7 @@ void	Client::quit()
 	return ;
 }
 
-void	Client::part() // PART NAO FUNCIONA
+void	Client::part()
 {
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
@@ -262,14 +265,13 @@ void	Client::part() // PART NAO FUNCIONA
 		return printMessage(ERR_BAD_CHAN_MASK);
 	if (!channelexist(chname))
 		return printMessage(ERR_NO_SUCH_CHANNEL);
-
 	Channel *targetchannel = NULL;
-	const std::vector<Channel>& channels = server.getChannelList();
+	std::vector<Channel*>& channels = server.getChannelList();
 	for (size_t i = 0; i < channels.size(); i++)
 	{
-		if (channels[i].getName() == chname)
+		if (channels[i]->getName() == chname)
 		{
-			targetchannel = const_cast<Channel*>(&channels[i]);
+			targetchannel = channels[i];
 			break;
 		}
 	}
@@ -277,15 +279,12 @@ void	Client::part() // PART NAO FUNCIONA
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	if (arguments.size() == 2)
 		reason = arguments[1];
-	std::string full_mask = getFullMask();
-	std::string part_message = ":" + full_mask + " PART " + chname;
+	std::string part_message = ":" + getFullMask() + " PART " + chname;
 	if (!reason.empty())
 		part_message += " :" + reason;
 	part_message += "\r\n";
-	this->messageClient(part_message);
 	targetchannel->broadcast(part_message, NULL);
 	targetchannel->removeClient(this);
-	targetchannel->removeOp(this);
 	if (targetchannel->getUserCount() == 1)
 	{
 		Client* remainingClient = targetchannel->getOnlyClient();
@@ -316,8 +315,6 @@ void	Client::msg()
 	if (arguments.size() < 2)
 		return printMessage(ERR_NEED_MORE_PARAMS);
 	std::string	ambiguous = arguments[0];
-	if (!arguments[2].empty())
-		return printMessage(ERR_NO_MESSAGE_GIVEN);
 	std::string message;
 	for (size_t i = 1; i < arguments.size(); i++)
 	{
@@ -326,14 +323,14 @@ void	Client::msg()
 			message += " ";
 	}
 	std::string truemessage = ":" + getFullMask() + " MSG " + ambiguous + " :" + message + "\r\n";
-	if (ambiguous[0] == '#')
+	if (ambiguous[0] == '#')   // NAO TA  A FUNCIONAR
 	{
 		if (!channelexist(ambiguous))
 			return printMessage(ERR_NO_SUCH_CHANNEL);
 		Channel *chacha = server.findChannel(ambiguous);
 		if (chacha->isAlreadyMember(this))
 			return printMessage(ERR_USER_NOT_IN_CHANNEL);
-        const std::vector<Client*>& members = chacha->getClients();
+		std::vector<Client*>& members = chacha->getClients();
 		for (size_t i = 0; i < members.size(); i++)
 		{
 			if (members[i] != this)
@@ -347,7 +344,7 @@ void	Client::msg()
 		Client *clicli = server.getClientByNick(ambiguous);
 		if (!clicli)
 			return printMessage(ERR_NO_SUCH_NICK);
-		messageClient(truemessage);
+		clicli->messageClient(truemessage);
 	}
 }
 
@@ -368,38 +365,66 @@ void Client::kick()
 		return printMessage(ERR_NO_SUCH_CHANNEL);
 	if (!nickAlreadyExists(username))
 		return printMessage(ERR_NO_SUCH_NICK);
-	Channel *channel = NULL;
-	const std::vector<Channel> &channels = server.getChannelList();
+	Channel *oldchan = NULL;
+	std::vector<Channel*> &channels = server.getChannelList();
 	for (size_t i = 0; i < channels.size(); ++i)
 	{
-		if (channels[i].getName() == channelname)
+		if (channels[i]->getName() == channelname)
 		{
-			channel = const_cast<Channel *>(&channels[i]);
+			oldchan = channels[i];
 			break;
 		}
 	}
-	if (!channel->isAlreadyMember(this))
+	if (!oldchan->isAlreadyMember(this))
 		return printMessage(ERR_NOT_ON_CHANNEL);
-	if (!channel->isOperator(this))
+	if (!oldchan->isOperator(this))
 		return printMessage(ERR_CHAN_OP_PRIV_NEEDED);
 	Client *target = server.getClientByNick(username);
-	if (!target || !channel->isAlreadyMember(target))
+	if (!target || !oldchan->isAlreadyMember(target))
 		return printMessage(ERR_USER_NOT_IN_CHANNEL);
 	std::string kick_msg = ":" + getFullMask() + " KICK " + channelname + " " + username;
 	if (!message.empty())
 		kick_msg += " :" + message;
 	kick_msg += "\r\n";
-	channel->broadcast(kick_msg, NULL);
-	channel->addKickClient(target);
-	channel->removeClient(target);
-	if (channel->getUserCount() == 1)
+	oldchan->broadcast(kick_msg, NULL);
+	oldchan->addKickClient(target);
+	oldchan->removeClient(target);
+	if (oldchan->getUserCount() == 1)
 	{
-		Client* remainingClient = channel->getOnlyClient();
-		if (remainingClient && !channel->isOperator(remainingClient))
-			channel->setOp(remainingClient);
+		Client* remainingClient = oldchan->getOnlyClient();
+		if (remainingClient && !oldchan->isOperator(remainingClient))
+			oldchan->setOp(remainingClient);
 	}
 	if (!message.empty())
 		printMessage(KICK_SOMEONE_MESSAGE);
 	else
 		printMessage(KICK_SOMEONE);
+}
+
+void Client::list()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() < 1)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string channelname = arguments[0];
+	if (channelname[0] != '#')
+		return printMessage(ERR_BAD_CHAN_MASK);
+	if (!channelexist(channelname))
+		return printMessage(ERR_NO_SUCH_CHANNEL);
+	Channel *channel = server.findChannel(channelname);
+	const std::vector<Client*>& members = channel->getClients();
+	std::string message = "Members in " + channelname + ":\r\n";
+	for (size_t i = 0; i < members.size(); i++)
+	{
+		message += "  ";
+		if (channel->isOperator(members[i]))
+			message += "[@] ";
+		else
+			message += "[ ] ";
+		message += members[i]->getNick();
+		message += " (" + members[i]->getFullMask() + ")";
+		message += "\r\n";
+	}
+	messageClient(message);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/17 15:49:46 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 03:16:44 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,11 +157,11 @@ void	Client::clearbuff()
 
 bool	Client::channelexist(std::string channelname)
 {
-	const std::vector<Channel> &channel_list = server.getChannelList();
-	std::vector<Channel>::const_iterator it;
+	std::vector<Channel*> &channel_list = server.getChannelList();
+	std::vector<Channel*>::const_iterator it;
 	for (it = channel_list.begin(); it != channel_list.end(); ++it)
 	{
-		if (it->getName() == channelname)
+		if ((*it)->getName() == channelname)
 			return (true);
 	}
 	return (false);
@@ -203,6 +203,9 @@ void	Client::handlecmd(std::string c)
 		break;
 	case 9:
 		kick();
+		break;
+	case 13:
+		list();
 		break;
 	default:
 		printMessage(ERR_UNKNOWN_COMMAND);

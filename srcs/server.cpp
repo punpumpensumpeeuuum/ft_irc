@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/25 03:49:28 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/18 03:24:12 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("INVITE"); // 10
 	cmdl.push_back("TOPIC"); // 11
 	cmdl.push_back("MODE"); // 12
+	cmdl.push_back("LIST"); // 13 x
 }
 
 Server::Server()
@@ -61,7 +62,7 @@ Server::~Server()
 	CloseServer();
 }
 
-std::vector<Channel>	Server::getChannelList()
+std::vector<Channel*>&	Server::getChannelList()
 {
 	return (this->channelist);
 }
@@ -94,6 +95,10 @@ void	Server::CloseServer()
 		int fd = clientlist[i]->getFd();
 		if (fd > 0)
 			close(fd);
+	}
+	for (size_t i = 0; i < channelist.size(); i++)
+	{
+		delete (channelist[i]);
 	}
 	if (serverSocket != -1)
 	{
@@ -238,7 +243,7 @@ std::vector<std::string>	Server::getcNickList()
 	return (this->cNicklist);
 }
 
-std::vector<Client*>			Server::getClientList()
+std::vector<Client*>&			Server::getClientList()
 {
 	return (this->clientlist);
 }
@@ -269,20 +274,19 @@ size_t		Server::findCmd(std::string c)
 	return (50);
 }
 
-
-Channel&	Server::createNewChannel(std::string cname)
+Channel*	Server::createNewChannel(std::string cname)
 {
-	Channel nChannel(cname);
+	Channel* nChannel = new Channel(cname);
 	channelist.push_back(nChannel);
-	return (channelist.back());
+	return (nChannel);
 }
 
 Channel* Server::findChannel(const std::string& name)
 {
 	for (size_t i = 0; i < channelist.size(); i++)
 	{
-		if (channelist[i].getName() == name)
-			return (&channelist[i]);
+		if (channelist[i]->getName() == name)
+			return (channelist[i]);
 	}
 	return (NULL);
 }
@@ -326,10 +330,10 @@ std::string		Server::getHostname()
 
 void		Server::removeChannel(std::string name)
 {
-	std::vector<Channel>::iterator it;
+	std::vector<Channel*>::iterator it;
 	for (it = channelist.begin(); it != channelist.end(); ++it)
 	{
-		if (it->getName() == name)
+		if ((*it)->getName() == name)
 		{
 			channelist.erase(it);
 			break;

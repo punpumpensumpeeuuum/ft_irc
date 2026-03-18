@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/25 03:22:41 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/18 03:24:23 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ Channel &Channel::operator=(const Channel &other)
 }
 Channel::~Channel()
 {
-	// free things ig
 }
 
 std::string		Channel::getName() const
@@ -175,6 +174,8 @@ void		Channel::broadcast(std::string str, Client* except)
 
 void Channel::removeClient(Client *cli)
 {
+	if (!cli)
+		return ;
 	std::vector<Client*>::iterator it = std::find(clientmembers.begin(), clientmembers.end(), cli);
 	if (it != clientmembers.end())
 	{

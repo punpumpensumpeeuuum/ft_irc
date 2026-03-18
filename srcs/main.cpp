@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:38:14 by buddy2            #+#    #+#             */
-/*   Updated: 2026/01/27 20:06:54 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/18 02:12:12 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int main(int ac, char** av)
 		std::cerr << e.what() << std::endl;
 		return (1);
 	}
-
 	return (0);
 }
+
+// o join ta a ir buscar o nome da maquina e nao o user e tal, ver se ]e suposto
