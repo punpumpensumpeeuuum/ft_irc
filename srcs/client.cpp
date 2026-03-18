@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 03:16:44 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/18 18:38:36 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,8 +157,8 @@ void	Client::clearbuff()
 
 bool	Client::channelexist(std::string channelname)
 {
-	std::vector<Channel*> &channel_list = server.getChannelList();
-	std::vector<Channel*>::const_iterator it;
+	std::vector<Channel*> channel_list = server.getChannelList();
+	std::vector<Channel*>::iterator it;
 	for (it = channel_list.begin(); it != channel_list.end(); ++it)
 	{
 		if ((*it)->getName() == channelname)
@@ -203,6 +203,9 @@ void	Client::handlecmd(std::string c)
 		break;
 	case 9:
 		kick();
+		break;
+	case 12:
+		mode();
 		break;
 	case 13:
 		list();

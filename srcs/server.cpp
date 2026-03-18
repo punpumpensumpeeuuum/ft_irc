@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 17:26:22 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/18 18:35:42 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("PART"); // 6 x
 	cmdl.push_back("MSG"); // 7
 	cmdl.push_back("PING"); // 8 x
-	cmdl.push_back("KICK"); // 9
+	cmdl.push_back("KICK"); // 9 x
 	cmdl.push_back("INVITE"); // 10
 	cmdl.push_back("TOPIC"); // 11
 	cmdl.push_back("MODE"); // 12

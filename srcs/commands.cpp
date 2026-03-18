@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 16:22:06 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/18 19:07:35 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,6 +399,20 @@ void Client::kick()
 		printMessage(KICK_SOMEONE_MESSAGE);
 	else
 		printMessage(KICK_SOMEONE);
+}
+
+void	Client::mode()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() < 2)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string chanchan = arguments[0];
+	if (chanchan[0] != '#')
+		return printMessage(ERR_BAD_CHAN_MASK);
+	if (!channelexist(chanchan))
+		return printMessage(ERR_NO_SUCH_CHANNEL);
+	
 }
 
 void Client::list()
