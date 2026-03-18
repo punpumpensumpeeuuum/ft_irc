@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 03:24:12 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/18 15:47:16 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,16 +137,16 @@ void	Server::Init()
 
 	serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (serverSocket == -1)
-		throw(std::runtime_error("faild to create socket"));
+		throw(std::runtime_error("failed to create socket"));
 	int en = 1;
 	if(setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
-		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
+		throw(std::runtime_error("failed to set option (SO_REUSEADDR) on socket"));
 	if (fcntl(serverSocket, F_SETFL, O_NONBLOCK) == -1)
-		throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
+		throw(std::runtime_error("failed to set option (O_NONBLOCK) on socket"));
 	if (bind(serverSocket, (struct sockaddr *)&add, sizeof(add)) == -1)
-		throw(std::runtime_error("faild to bind socket"));
+		throw(std::runtime_error("failed to bind socket"));
 	if (listen(serverSocket, SOMAXCONN) == -1)
-		throw(std::runtime_error("listen() faild"));
+		throw(std::runtime_error("listen() failed"));
 	NewPoll.fd = serverSocket;
 	NewPoll.events = POLLIN;
 	NewPoll.revents = 0;
@@ -161,7 +161,7 @@ void	Server::Init()
 		{
 			if (!Server::signal)
     		    break; 
-			throw(std::runtime_error("poll() faild"));
+			throw(std::runtime_error("poll() failed"));
 		}
 		for (size_t i = 0; i < fds.size(); i++)
 		{
@@ -217,6 +217,11 @@ void	Server::ReceiveData(int fd)
 	{
 		handleQuit(fd);
 		return;
+	}
+	if (cli->isDisconnected())
+	{
+		handleQuit(fd);
+		return ;
 	}
 	cli->appendMessage(std::string(buffer, bytes));
 	while (cli->hasLine())

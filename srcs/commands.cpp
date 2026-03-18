@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 03:26:39 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/18 15:46:02 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,26 @@ void	Client::help()
 	std::ostringstream oss;
 
 	oss << "PASS <password>						|| Enter server password" << std::endl;
-	oss << "NICK <nickname>					 	|| Set a new nickname" << std::endl;
-	oss << "USER <username> * * : <realname> 	|| Set your username and real name" << std::endl;
+	oss << "NICK <nickname>						|| Set a new nickname" << std::endl;
+	oss << "USER <username> * * : <realname>	|| Set your username and real name" << std::endl;
 	if (this->authenticatedcheck == true)
 	{
-		oss << "NICK <nickname>					 	|| Set a new nickname" << std::endl;
-		oss << "PING <token>					 	|| Ping the server" << std::endl;
-		oss << "QUIT <reason>					 	|| Leave the server" << std::endl;
-		oss << "JOIN <channel>			  		 	|| Join a channel" << std::endl;
-		oss << "PART <channel>					 	|| Leave a channel" << std::endl;
-		oss << "KICK <channel> <user>   		 	|| Kicks an user from a channel" << std::endl;
-		oss << "INVITE <nick> <channel>   		 	|| Invites an user to a channel" << std::endl;
-		oss << "MSG <nick/channel> : <message> 	 	|| Sends a message to an user or a channel" << std::endl;
-		oss << "MODE <channel> <modes> [params]  	|| Changes channel's mode" << std::endl;
-		oss << "Modes:	   						 	||" << std::endl;
-		oss << "	i - Invite only				 	||" << std::endl;
+		oss << "NICK <nickname>						|| Set a new nickname" << std::endl;
+		oss << "PING <token>						|| Ping the server" << std::endl;
+		oss << "QUIT <reason>						|| Leave the server" << std::endl;
+		oss << "JOIN <channel>						|| Join a channel" << std::endl;
+		oss << "PART <channel>						|| Leave a channel" << std::endl;
+		oss << "KICK <channel> <user>				|| Kicks an user from a channel" << std::endl;
+		oss << "INVITE <nick> <channel>				|| Invites an user to a channel" << std::endl;
+		oss << "MSG <nick/channel> : <message>		|| Sends a message to an user or a channel" << std::endl;
+		oss << "MODE <channel> <modes> [params]		|| Changes channel's mode" << std::endl;
+		oss << "Modes:								||" << std::endl;
+		oss << "	i - Invite only					||" << std::endl;
 		oss << "	t - Only ops can change topics	||" << std::endl;
-		oss << "	k - Set/remove channel password ||" << std::endl;
+		oss << "	k - Set/remove channel password	||" << std::endl;
 		oss << "	l - Set/remove user limit		||" << std::endl;
-		oss << "	o - Give/take operator status   ||" << std::endl;
-		oss << "TOPIC <channel> 				  	|| Sees the channel's topic" << std::endl;
+		oss << "	o - Give/take operator status	||" << std::endl;
+		oss << "TOPIC <channel>						|| Sees the channel's topic" << std::endl;
 		oss << "TOPIC <channel> <newtopic>			|| Change the channel's topic" << std::endl;
 	}
 
@@ -193,7 +193,7 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 {
 	std::string mask = getFullMask();
 	std::string hostname = server.getHostname();
-	std::string join_msg = ":" + mask + " JOIN :" + cname + "\r\n";
+	std::string join_msg = ":" + mask + " JOIN: " + cname + "\r\n";
 	const std::vector<Client*>& clients = channel->getClients();
 
 	for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it)
@@ -234,7 +234,7 @@ void	Client::quit()
 			reason += " ";
 		}
 	}
-	std::string quitMessage = ":" + this->getNick() + "!" + cuser + "@" + userIP + " QUIT :" + reason + "\r\n";
+	std::string quitMessage = ":" + this->getNick() + "!" + cuser + "@" + userIP + " QUIT: " + reason + "\r\n";
 	std::vector<Channel*>& channels = server.getChannelList();
  	for (size_t i = 0; i < channels.size(); ++i)
 	{
@@ -316,13 +316,13 @@ void	Client::msg()
 		return printMessage(ERR_NEED_MORE_PARAMS);
 	std::string	ambiguous = arguments[0];
 	std::string message;
-	for (size_t i = 1; i < arguments.size(); i++)
+	for (size_t i = 2; i < arguments.size(); i++)
 	{
 		message += arguments[i];
-		if (i > 1)
+		if (i > 2)
 			message += " ";
 	}
-	std::string truemessage = ":" + getFullMask() + " MSG " + ambiguous + " :" + message + "\r\n";
+	std::string truemessage = ":" + getFullMask() + " MSG " + ambiguous + ": " + message + "\r\n";
 	if (ambiguous[0] == '#')   // NAO TA  A FUNCIONAR
 	{
 		if (!channelexist(ambiguous))
