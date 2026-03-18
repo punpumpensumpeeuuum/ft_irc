@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 16:15:34 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 17:26:22 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,12 @@ void	Server::CloseServer()
 		int fd = clientlist[i]->getFd();
 		if (fd > 0)
 			close(fd);
+		delete clientlist[i];
 	}
+	clientlist.clear();
 	for (size_t i = 0; i < channelist.size(); i++)
-	{
 		delete (channelist[i]);
-	}
+	channelist.clear();
 	if (serverSocket != -1)
 	{
 		close(serverSocket);
@@ -255,7 +256,7 @@ std::vector<Client*>&			Server::getClientList()
 
 void	Server::setNewcNick(std::string oldnick, std::string nnick)
 {
-	if (oldnick.empty())
+	if (!oldnick.empty())
 	{
 		std::vector<std::string>::iterator it = std::find(cNicklist.begin(), cNicklist.end(), oldnick);
 		if (it != cNicklist.end())

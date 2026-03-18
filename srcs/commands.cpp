@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 16:14:57 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 16:22:06 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,6 @@ void	Client::quit()
 	}
 	messageClient(":" + cnick + "!" + cuser + "@" + userIP + " QUIT " + reason + "\r\n");
 	disconnected = true;
-	this->server.handleQuit(this->fd);
 	return ;
 }
 
