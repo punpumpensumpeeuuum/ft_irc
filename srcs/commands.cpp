@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:07:35 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 19:18:15 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ void	Client::join()
 			if (pass != channel->getPassword())
 				return printMessage(ERR_BAD_CHANNEL_KEY);
 		}
-		if (!channel->isInvited(this) && (channel->isInviteOnly() || channel->isKicked(this)))
+		if (!channel->isInvited(this) && channel->isInviteOnly())
 			return printMessage(ERR_INVITE_ONLY_CHAN);
 		if (channel->getUserLimit() > 0 && channel->getUserCount() >= channel->getUserLimit())
 			return printMessage(ERR_CHANNEL_IS_FULL);
