@@ -6,7 +6,7 @@
 /*   By: jobraga- <jobraga-@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 15:47:16 by jobraga-         ###   ########.fr       */
+/*   Updated: 2026/03/18 16:15:34 by jobraga-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,7 @@ void	Server::ReceiveData(int fd)
 		handleQuit(fd);
 		return;
 	}
-	if (cli->isDisconnected())
+	if (cli->isDisconnected() == true)
 	{
 		handleQuit(fd);
 		return ;
