@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:50:49 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 17:45:28 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,12 @@ void	Client::handlecmd(std::string c)
 		break;
 	case 13:
 		list();
+		break;
+	case 14:
+		fast();
+		break;
+	case 15:
+		fast2();
 		break;
 	default:
 		printMessage(ERR_UNKNOWN_COMMAND);

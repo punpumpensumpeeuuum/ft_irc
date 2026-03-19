@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/05 19:02:17 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/19 18:05:52 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,8 @@ void	Client::printMessage(int nb)
 			oss << "He is no longer on channel: " << arguments[0] << "\n";
 			oss << "Kick message: " << arguments[2] << "\r\n";
 			break;
+		case KICKED_CHANNEL:
+			oss << "You just got kicked from: " << arguments[0] << "\r\n";
 		case INVITE_SUCCESS:
 			oss << "You invited " << arguments[0] << " to channel: " << arguments[1] << "\r\n";
 			break;

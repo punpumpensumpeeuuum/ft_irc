@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:51:27 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:18:29 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ std::string		Client::getFullMask()
 void Client::joiningMessage(const std::string& cname, Channel *channel)
 {
 	std::string mask = getFullMask();
-	std::string join_msg = ":" + mask + " JOIN: " + cname + "\r\n";
+	std::string join_msg = ":" + mask + " JOIN " + cname + "\r\n";
 	const std::vector<Client*>& clients = channel->getClients();
 
 	for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it)
@@ -200,7 +200,7 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 		Client* client = *it;
 		client->messageClient(join_msg);
 	}
-	this->messageClient(":" + this->cuser + " 324 " + cnick + " " + cname + " +nt\r\n");
+	this->messageClient(":" + this->cuser + " 324 " + cnick + " " + cname + "\r\n");
 
 	std::ostringstream ts;
 	ts << ":" << this->cuser << " 329 " << cnick << " " << cname << " " << std::time(0) << "\r\n";
@@ -307,6 +307,24 @@ void	Client::ping()
 	return printMessage(PONG);
 }
 
+void	Client::fast()
+{
+	authenticatedcheck = true;
+	cuser = "userum";
+	crealname = "nomerealum";
+	cnick = "nickum";
+	server.setNewcNick(cnick, "nickum");
+}
+
+void	Client::fast2()
+{
+	authenticatedcheck = true;
+	cuser = "userdois";
+	crealname = "nomerealdois";
+	cnick = "nickdois";
+	server.setNewcNick(cnick, "nickdois");
+}
+
 void	Client::msg()
 {
 	if (!getAuthenticated())
@@ -315,28 +333,22 @@ void	Client::msg()
 		return printMessage(ERR_NEED_MORE_PARAMS);
 	std::string	ambiguous = arguments[0];
 	std::string message;
-	for (size_t i = 2; i < arguments.size(); i++)
+	for (size_t i = 1; i < arguments.size(); i++)
 	{
 		message += arguments[i];
-		if (i > 2)
-			message += " ";
+		message += " ";
 	}
 	std::string truemessage = ":" + getFullMask() + " MSG " + ambiguous + ": " + message + "\r\n";
-	if (ambiguous[0] == '#')   // NAO TA  A FUNCIONAR
+	if (ambiguous[0] == '#') // +-
 	{
 		if (!channelexist(ambiguous))
 			return printMessage(ERR_NO_SUCH_CHANNEL);
 		Channel *chacha = server.findChannel(ambiguous);
-		if (chacha->isAlreadyMember(this))
+		if (!chacha->isAlreadyMember(this))
 			return printMessage(ERR_USER_NOT_IN_CHANNEL);
 		std::vector<Client*>& members = chacha->getClients();
 		for (size_t i = 0; i < members.size(); i++)
-		{
-			if (members[i] != this)
-			{
-				messageClient(truemessage);
-			}
-		}
+			members[i]->messageClient(truemessage);
 	}
 	else
 	{
@@ -347,17 +359,23 @@ void	Client::msg()
 	}
 }
 
-void Client::kick()
+void Client::kick() // msg do kick pode ser grande
 {
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
-	if (arguments.size() < 2 || arguments.size() > 3)
+	if (arguments.size() < 2)
 		return printMessage(ERR_NEED_MORE_PARAMS);
 	std::string channelname = arguments[0];
 	std::string username = arguments[1];
 	std::string message = "";
 	if (arguments.size() == 3)
-		message = arguments[2];
+	{
+		for (size_t i = 2; i < arguments.size(); i++)
+		{
+			message += arguments[i];
+			message += " ";
+		}
+	}
 	if (channelname[0] != '#')
 		return printMessage(ERR_BAD_CHAN_MASK);
 	if (!channelexist(channelname))
@@ -388,6 +406,7 @@ void Client::kick()
 	oldchan->broadcast(kick_msg, NULL);
 	oldchan->addKickClient(target);
 	oldchan->removeClient(target);
+	target->printMessage(KICKED_CHANNEL);
 	if (oldchan->getUserCount() == 1)
 	{
 		Client* remainingClient = oldchan->getOnlyClient();
@@ -404,15 +423,24 @@ void	Client::mode()
 {
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
-	if (arguments.size() < 2)
+	if (arguments.size() < 1)
 		return printMessage(ERR_NEED_MORE_PARAMS);
 	std::string chanchan = arguments[0];
 	if (chanchan[0] != '#')
 		return printMessage(ERR_BAD_CHAN_MASK);
 	if (!channelexist(chanchan))
 		return printMessage(ERR_NO_SUCH_CHANNEL);
-	
+	Channel *channel = server.findChannel(chanchan);
+	int userLimit = channel->getUserLimit();
+	std::string keyword = channel->getPassword();
+	if (arguments.size() == 1)
+	{
+		std::cout << "Channel " << chanchan << " modes: +Cnstlk " << userLimit << " " << keyword << std::endl;
+	}
 }
+
+// sem args: Channel #alphas modes: +Cnstlk <user_limit> <keyword>
+// 		     Channel #alphas created on Thu Mar 19 13:59:11 2026
 
 void Client::list()
 {

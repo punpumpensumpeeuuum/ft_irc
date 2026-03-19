@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:59:52 by buddy2            #+#    #+#             */
-/*   Updated: 2026/02/05 19:03:08 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/19 18:04:10 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ enum messages
 	YOU_WERE_INVITED,
 	INVITE_SUCCESS,
 	MODE_UPDATED,
+	KICKED_CHANNEL,
 };
 
 enum errors

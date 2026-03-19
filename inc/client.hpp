@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:50:35 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 17:44:14 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,9 @@ class Client
 		std::string		takeLine();
 		void			clearbuff();
 
+		void			fast();
+		void			fast2();
+		
 		void			help();
 
 		void			pass();

@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:49:57 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:12:33 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("KICK"); // 9 x
 	cmdl.push_back("INVITE"); // 10
 	cmdl.push_back("TOPIC"); // 11
-	cmdl.push_back("MODE"); // 12
-	cmdl.push_back("LIST"); // 13 x
+	cmdl.push_back("MODE"); // 12  | limite de pessoas no channel tem de ser no minimo 1 e no maximo 2147483647 | /join #<channel> <keyword>
+	cmdl.push_back("NAMES"); // 13 x
+	cmdl.push_back("FAST");
+	cmdl.push_back("FAST2");
 }
 
 Server::Server()
