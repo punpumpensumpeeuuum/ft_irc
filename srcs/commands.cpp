@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 19:05:51 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 19:08:10 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -443,13 +443,13 @@ void	Client::mode()
 		return printMessage(ERR_NO_SUCH_CHANNEL);
 	Channel *channel = server.findChannel(chanchan);
 	if (!channel->isAlreadyMember(this))
-		return printMessage(ERR_NOT_OP);//ops
-	// std::msgtobroad = "Channel " + ckitkatklanhannel->getName() << " modes: +nao " << channel->getUserLimit << " " << password << "\r\n";
+		return printMessage(ERR_NOT_ON_CHANNEL);//ops
+	// std::msgtobroad = "Channel " + ckitkatkhannel->getName() << " modes: +nao " << channel->getUserLimit << " " << password << "\r\n";
 /*opsopsopsops*/	char flags = 0;
 	if (arguments.size() == 2)
 		flags = arguments[1][0];
 	if (!channel->isOperator(this))
-		return printMessage();
+		return printMessage(ERR_NOT_OP);
 	switch (flags)
 	{
 		case 'i':
