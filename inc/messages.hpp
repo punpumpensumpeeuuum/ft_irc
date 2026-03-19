@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:59:52 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 18:04:10 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 19:04:17 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ enum errors
 	ERR_BAD_CHANNEL_KEY = 475,
 	ERR_BAD_CHAN_MASK = 476,
 	ERR_CHAN_OP_PRIV_NEEDED = 482,
-	ERR_NO_OPER_HOST = 491,
+	ERR_NOT_OP = 491,
 	ERR_USERS_DONT_MATCH = 502,
 	ERR_USER_ALREADY_INVITED = 900,
 	ERR_INVALID_INPUT = 901,

@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 18:18:29 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 19:05:51 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,9 +418,20 @@ void Client::kick() // msg do kick pode ser grande
 	else
 		printMessage(KICK_SOMEONE);
 }
-
+void	Client::modeInvite(Channel *chanchan)
+{
+	chanchan->switchInvite();
+	std::string message; //"kun sets mode +i on #ola"
+	if (chanchan->isInviteOnly())
+		message = this->getNick() + " sets mode +i on " + chanchan->getName() + "\r\n";
+	else
+		message = this->getNick() + " sets mode -i on " + chanchan->getName() + "\r\n";
+	chanchan->broadcast(message, NULL);
+	return ;
+}
 void	Client::mode()
 {
+	// so pos ops	
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
 	if (arguments.size() < 1)
@@ -431,11 +442,34 @@ void	Client::mode()
 	if (!channelexist(chanchan))
 		return printMessage(ERR_NO_SUCH_CHANNEL);
 	Channel *channel = server.findChannel(chanchan);
-	int userLimit = channel->getUserLimit();
-	std::string keyword = channel->getPassword();
-	if (arguments.size() == 1)
+	if (!channel->isAlreadyMember(this))
+		return printMessage(ERR_NOT_OP);//ops
+	// std::msgtobroad = "Channel " + ckitkatklanhannel->getName() << " modes: +nao " << channel->getUserLimit << " " << password << "\r\n";
+/*opsopsopsops*/	char flags = 0;
+	if (arguments.size() == 2)
+		flags = arguments[1][0];
+	if (!channel->isOperator(this))
+		return printMessage();
+	switch (flags)
 	{
-		std::cout << "Channel " << chanchan << " modes: +Cnstlk " << userLimit << " " << keyword << std::endl;
+		case 'i':
+			modeInvite(channel);
+			break;
+		// case 't':
+		// 	modeTopic();
+		// 	break;
+		// case 'k':
+		// 	modeKeyword();
+		// 	break;
+		// case 'l':
+		// 	modeLimit();
+		// 	break;
+		// case 'o':
+		// 	modeOperator();
+		// 	break;
+		default:
+			return printMessage(ERR_INVALID_INPUT);
+			break;
 	}
 }
 

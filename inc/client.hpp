@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 17:44:14 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 18:41:38 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,11 @@ class Client
 		void			kick();
 
 		void			mode();
+		void			modeInvite(Channel *chanchan);
+		void			modeTopic();
+		void			modeKeyword();
+		void			modeLimit();
+		void			modeOperator();
 
 		void			list();
 };

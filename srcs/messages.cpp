@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 18:05:52 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/19 19:04:12 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@ void	Client::printMessage(int nb)
 		case ERR_CHAN_OP_PRIV_NEEDED:
 			oss << "Channel operator privileges needed\r\n";
 			break;
-		case ERR_NO_OPER_HOST:
-			oss << "No operator host\r\n";
+		case ERR_NOT_OP:
+			oss << "User is not a channel operator\r\n";
 			break;
 		case ERR_USERS_DONT_MATCH:
 			oss << "Users don't match\r\n";

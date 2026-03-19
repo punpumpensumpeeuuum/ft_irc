@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 03:24:23 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/19 18:41:15 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,4 +191,9 @@ Client*		Channel::getOnlyClient()
 	if (clientmembers.size() == 1)
 		return (clientmembers.front());
 	return (NULL);
+}
+
+void	Channel::switchInvite()
+{
+	this->inviteonly = !(this->inviteonly); 
 }
