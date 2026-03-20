@@ -6,7 +6,7 @@
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 16:28:21 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/20 16:29:25 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -525,9 +525,9 @@ void Client::modeChannel(Channel *chanchan)
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	std::string message;
 	if (chanchan->getModes().empty())
-		message = ":" + chanchan->getName() + " 324 " + cnick + " " + chanchan->getName() + " " + chanchan->getModes() + chanchan->getPassword() +"\r\n";
+		message = "Channel " + chanchan->getName() + " has no modes " + limitStr + chanchan->getPassword() + "\r\n";
 	else	
-		message = ":" + chanchan->getName() + " 324 " + cnick + " " + chanchan->getName() + " " + chanchan->getModes() + chanchan->getPassword() +"\r\n";
+		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + chanchan->getPassword() + "\r\n";
 	chanchan->broadcast(message, NULL);
 }
 
