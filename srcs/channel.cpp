@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 15:51:43 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:44:24 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,11 @@ std::string		Channel::getPassword()
 int			Channel::getUserLimit()
 {
 	return (this->userlimit);
+}
+
+void		Channel::setUserLimit(int LIMIT)
+{
+	this->userlimit = LIMIT;
 }
 
 int			Channel::getUserCount()

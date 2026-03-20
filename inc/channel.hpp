@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 15:46:17 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:40:52 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ public:
 		bool					removeOp(Client *client);
 		std::string				getPassword();
 		int						getUserLimit();
+		void					setUserLimit(int LIMIT);
 		int						getUserCount();
 		void					setTopic(std::string nt);
 		std::string				getTopic();
