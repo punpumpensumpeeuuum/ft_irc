@@ -6,7 +6,7 @@
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 16:44:24 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/20 17:29:09 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Channel::Channel()
 {
 	name = "Channel";
 	topic = "";
-	password = "";
+	keyword = "";
 	inviteonly = false;
 	topicOp = false;
 	userlimit = 2;
@@ -26,14 +26,14 @@ Channel::Channel()
 Channel::Channel(std::string n) : name(n)
 {
 	topic = "";
-	password = "";
+	keyword = "";
 	inviteonly = false;
 	topicOp = false;
 	userlimit = 2;
 	userCount = 0;
 }
 
-Channel::Channel(std::string n, std::string p) : name(n), password(p)
+Channel::Channel(std::string n, std::string p) : name(n), keyword(p)
 {
 	topic = "";
 	inviteonly = false;
@@ -45,7 +45,7 @@ Channel::Channel(std::string n, std::string p) : name(n), password(p)
 Channel::Channel(const Channel &other)
 {
 	name = other.name;
-	password = other.password;
+	keyword = other.keyword;
 	inviteonly = other.inviteonly;
 	topicOp = other.topicOp;
 	userlimit = other.userlimit;
@@ -62,7 +62,7 @@ Channel &Channel::operator=(const Channel &other)
 	if (this != &other)
 	{
 		name = other.name;
-		password = other.password;
+		keyword = other.keyword;
 		inviteonly = other.inviteonly;
 		topicOp = other.topicOp;
 		userlimit = other.userlimit;
@@ -144,16 +144,21 @@ bool		Channel::isKicked(Client *cli)
 	return (false);
 }
 
-bool		Channel::hasPassword()
+bool		Channel::hasKeyword()
 {
-	if (password.empty())
+	if (keyword.empty())
 		return (false);
 	return (true);
 }
 
-std::string		Channel::getPassword()
+std::string		Channel::getKeyword()
 {
-	return (this->password);
+	return (this->keyword);
+}
+
+void		Channel::setKeyword(std::string str)
+{
+	this->keyword = str;
 }
 
 int			Channel::getUserLimit()

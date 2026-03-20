@@ -6,7 +6,7 @@
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 16:56:37 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/20 17:34:47 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,12 +155,12 @@ void	Client::join()
 	{
 		if (channel->isAlreadyMember(this))
 			return printMessage(ERR_USER_ON_CHANNEL);
-		if (channel->hasPassword())
+		if (channel->hasKeyword())
 		{
 			if (arguments.size() < 2)
 				return printMessage(ERR_BAD_CHANNEL_KEY);
 			std::string	pass = arguments[1];
-			if (pass != channel->getPassword())
+			if (pass != channel->getKeyword())
 				return printMessage(ERR_BAD_CHANNEL_KEY);
 		}
 		if (!channel->isInvited(this) && channel->isInviteOnly())
@@ -487,12 +487,6 @@ void	Client::modeInvite(Channel *chanchan)
 	chanchan->broadcast(message, NULL);
 }
 
-// void	Client::modeTopic(Channel *chanchan)
-// {
-	// topic ainda nao v\e o mode
-	// fazer alguma maneira facil de dar store aos modos ativos, tipo uma string com todos os modos ou algo do genreo
-// }
-
 void Client::modeChannel(Channel *chanchan)
 {
 	std::ostringstream oss;
@@ -502,9 +496,9 @@ void Client::modeChannel(Channel *chanchan)
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	std::string message;
 	if (chanchan->getModes().empty())
-		message = "Channel " + chanchan->getName() + " has no modes " + limitStr + chanchan->getPassword() + "\r\n";
+		message = "Channel " + chanchan->getName() + " has no modes " + limitStr + chanchan->getKeyword() + "\r\n";
 	else	
-		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + chanchan->getPassword() + "\r\n";
+		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + chanchan->getKeyword() + "\r\n";
 	chanchan->broadcast(message, NULL);
 }
 
@@ -572,6 +566,24 @@ void	Client::modeLimit(Channel *chanchan)
 	chanchan->broadcast(meesage, NULL);
 }
 
+void	Client::modeKeyword(Channel *chanchan)
+{
+	if (arguments.size() < 3)
+		return ;
+	if (chanchan->hasKeyword() && arguments[2] == chanchan->getKeyword())
+	{
+		chanchan->setKeyword("");
+		std::string meesage = this->getNick() + " removes channel keyword\r\n";
+		chanchan->broadcast(meesage, NULL);
+	}
+	else
+	{
+		chanchan->setKeyword(arguments[2]);
+		std::string meesage = this->getNick() + " sets channel keyword to " + arguments[2] + "\r\n";
+		chanchan->broadcast(meesage, NULL);
+	}
+}
+
 void	Client::mode()
 {
 	if (!getAuthenticated())
@@ -599,9 +611,9 @@ void	Client::mode()
 		case 't':
 			modeTopic(channel);
 			break;
-		// case 'k':
-		// 	modeKeyword();
-		// 	break;
+		case 'k':
+			modeKeyword(channel);
+			break;
 		case 'l':
 			modeLimit(channel);
 			break;
