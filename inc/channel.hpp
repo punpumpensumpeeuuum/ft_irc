@@ -6,7 +6,7 @@
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 16:40:52 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/20 17:28:31 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ private:
 	std::set<Client*>		operators;
 	std::set<Client*>		kicked;
 	std::string				name;
-	std::string				password;
+	std::string				keyword;
 	std::string				topic;
 	bool					inviteonly;
 	bool					topicOp;
@@ -54,9 +54,10 @@ public:
 		bool					isTopicOpOnly();
 		bool					isInvited(Client *cli);
 		bool					isKicked(Client *cli);
-		bool					hasPassword();
+		bool					hasKeyword();
 		bool					removeOp(Client *client);
-		std::string				getPassword();
+		std::string				getKeyword();
+		void					setKeyword(std::string str);
 		int						getUserLimit();
 		void					setUserLimit(int LIMIT);
 		int						getUserCount();
