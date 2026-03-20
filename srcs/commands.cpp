@@ -3,10 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+<<<<<<< HEAD
+/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
+/*   Updated: 2026/03/20 16:11:15 by marada           ###   ########.fr       */
+=======
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
 /*   Updated: 2026/03/20 16:10:47 by frteixei         ###   ########.fr       */
+>>>>>>> refs/remotes/origin/main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -487,6 +494,29 @@ void	Client::modeInvite(Channel *chanchan)
 	chanchan->broadcast(message, NULL);
 }
 
+void	Client::modeOperator(Channel *chanchan)
+{
+	if (arguments.size() < 3)
+		return ;
+	std::string nome = arguments[2];
+	Client *cleinte = server.getClientByNick(nome);
+	std::string meesage;
+	if (!cleinte)
+		return ;
+	if (!chanchan->isOperator(cleinte))
+	{
+		meesage = this->getNick() + " gives channel operator to " + cleinte->getNick() + "\r\n";
+		chanchan->broadcast(meesage, NULL);
+		chanchan->setOp(cleinte);
+	}
+	else
+	{
+		meesage = this->getNick() + " removes channel operator from " + cleinte->getNick() + "\r\n";
+		chanchan->broadcast(meesage, NULL);
+		chanchan->removeOp(cleinte);
+	}
+}
+
 // void	Client::modeTopic(Channel *chanchan)
 // {
 	// topic ainda nao v\e o mode
@@ -547,7 +577,7 @@ void	Client::mode()
 	if (!channel->isAlreadyMember(this))
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	char flags = 0;
-	if (arguments.size() == 2)
+	if (arguments.size() >= 2)
 		flags = arguments[1][0];
 	if (!channel->isOperator(this))
 		return printMessage(ERR_NOT_OP);
@@ -565,9 +595,9 @@ void	Client::mode()
 		// case 'l':
 		// 	modeLimit(channel);
 		// 	break;
-		// case 'o':
-		// 	modeOperator();
-		// 	break;
+		case 'o':
+			modeOperator(channel);
+			break;
 		default:
 			modeChannel(channel);
 			break;
