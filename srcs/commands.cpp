@@ -3,10 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+<<<<<<< HEAD
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
 /*   Updated: 2026/03/20 16:11:15 by marada           ###   ########.fr       */
+=======
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
+/*   Updated: 2026/03/20 15:27:52 by frteixei         ###   ########.fr       */
+>>>>>>> refs/remotes/origin/main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,12 +472,20 @@ void	Client::topic()
 
 void	Client::modeInvite(Channel *chanchan)
 {
+	if (!chanchan->isOperator(this))
+		return printMessage(ERR_NOT_OP);
 	chanchan->switchInvite();
 	std::string message;
 	if (chanchan->isInviteOnly())
+	{
+		chanchan->addMode('i');
 		message = this->getNick() + " sets mode +i on " + chanchan->getName() + "\r\n";
+	}
 	else
+	{
+		chanchan->removeMode('i');
 		message = this->getNick() + " sets mode -i on " + chanchan->getName() + "\r\n";
+	}
 	chanchan->broadcast(message, NULL);
 }
 
@@ -503,6 +518,24 @@ void	Client::modeOperator(Channel *chanchan)
 	// fazer alguma maneira facil de dar store aos modos ativos, tipo uma string com todos os modos ou algo do genreo
 // }
 
+void Client::modeChannel(Channel *chanchan)
+{
+	std::ostringstream oss;
+	oss << chanchan->getUserLimit();
+	std::string limitStr = oss.str();
+	if (!chanchan->isAlreadyMember(this))
+		return printMessage(ERR_NOT_ON_CHANNEL);
+	std::string message;
+	if (chanchan->getModes().empty())
+		message = "Channel " + chanchan->getName() + " has no modes " + limitStr + chanchan->getPassword() + "\r\n";
+	else	
+		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + chanchan->getPassword() + "\r\n";
+	chanchan->broadcast(message, NULL);
+}
+
+// sem args: Channel #alphas modes: +Cnstlk <user_limit> <keyword>
+// 		     Channel #alphas created on Thu Mar 19 13:59:11 2026
+
 void	Client::mode()
 {
 	if (!getAuthenticated())
@@ -517,7 +550,6 @@ void	Client::mode()
 	Channel *channel = server.findChannel(chanchan);
 	if (!channel->isAlreadyMember(this))
 		return printMessage(ERR_NOT_ON_CHANNEL);
-	// std::msgtobroad = "Channel " + ckitkatkhannel->getName() << " modes: +nao " << channel->getUserLimit << " " << password << "\r\n";
 	char flags = 0;
 	if (arguments.size() >= 2)
 		flags = arguments[1][0];
@@ -535,19 +567,17 @@ void	Client::mode()
 		// 	modeKeyword();
 		// 	break;
 		// case 'l':
-		// 	modeLimit();
+		// 	modeLimit(channel);
 		// 	break;
 		case 'o':
 			modeOperator(channel);
 			break;
 		default:
-			return printMessage(ERR_INVALID_INPUT);
+			modeChannel(channel);
 			break;
 	}
 }
 
-// sem args: Channel #alphas modes: +Cnstlk <user_limit> <keyword>
-// 		     Channel #alphas created on Thu Mar 19 13:59:11 2026
 
 void Client::list()
 {

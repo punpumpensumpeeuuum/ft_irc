@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 06:23:27 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/20 15:21:43 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,4 +213,24 @@ std::string	Channel::getTopic()
 	if (this->topic.empty())
 		return (NULL);
 	return (this->topic);
+}
+
+void Channel::addMode(char mode)
+{
+	if (modes.find(mode) == std::string::npos)
+		modes += mode;
+}
+
+void Channel::removeMode(char mode)
+{
+	size_t pos = modes.find(mode);
+	if (pos != std::string::npos)
+		modes.erase(pos, 1);
+}
+
+std::string Channel::getModes()
+{
+	if (modes.empty())
+		return "";
+	return "+" + modes;
 }
