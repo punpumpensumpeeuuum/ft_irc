@@ -6,7 +6,7 @@
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 17:34:47 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/20 19:33:01 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,10 +158,10 @@ void	Client::join()
 		if (channel->hasKeyword())
 		{
 			if (arguments.size() < 2)
-				return printMessage(ERR_BAD_CHANNEL_KEY);
+				return printMessage(ERR_WRONG_KEY);
 			std::string	pass = arguments[1];
 			if (pass != channel->getKeyword())
-				return printMessage(ERR_BAD_CHANNEL_KEY);
+				return printMessage(ERR_WRONG_KEY);
 		}
 		if (!channel->isInvited(this) && channel->isInviteOnly())
 			return printMessage(ERR_INVITE_ONLY_CHAN);
@@ -417,6 +417,45 @@ void Client::kick()
 		printMessage(KICK_SOMEONE_MESSAGE);
 	else
 		printMessage(KICK_SOMEONE);
+}
+
+void	Client::invite()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() < 1)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string	chanchon = arguments[1];	
+	std::string targer = arguments[0];
+	std::string	meesage;
+	if (chanchon[0] != '#')
+		return printMessage(ERR_BAD_CHAN_MASK);
+	if (!channelexist(chanchon))
+		return printMessage(ERR_NO_SUCH_CHANNEL);
+	Channel *chanchan = NULL;
+	std::vector<Channel*>& channels = server.getChannelList();
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		if (channels[i]->getName() == chanchon)
+		{
+			chanchan = channels[i];
+			break;
+		}
+	}
+	if (!chanchan->isAlreadyMember(this))
+		return printMessage(ERR_NOT_ON_CHANNEL);
+	if (!chanchan->isOperator(this))
+		return printMessage(ERR_NOT_OP);
+	Client *target = server.getClientByNick(targer);
+	if (!target)
+		return printMessage(ERR_NO_SUCH_NICK);
+	if (target == this || chanchan->isAlreadyMember(target))
+		return ;
+	chanchan->setInvited(target);
+	printMessage(INVITE_SUCCESS);
+	target->printMessage(YOU_WERE_INVITED);
+	meesage = arguments[0] + " has been invited to " + arguments[1] + " by " + this->getNick() + "\r\n";
+	chanchan->broadcast(meesage, NULL);
 }
 
 void	Client::topic()

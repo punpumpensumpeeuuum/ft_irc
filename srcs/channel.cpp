@@ -6,7 +6,7 @@
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 17:29:09 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/20 18:54:38 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,13 @@ void		Channel::removeInvited(Client *cli)
 	if (!cli)
 		return ;
 	invitedmembers.erase(cli);
+}
+
+void		Channel::setInvited(Client* cli)
+{
+	if (!isInvited(cli))
+		invitedmembers.insert(cli);
+	return ;
 }
 
 std::vector<Client*>&	Channel::getClients()

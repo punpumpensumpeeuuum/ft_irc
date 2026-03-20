@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:59:52 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 19:04:17 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 19:09:29 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ enum errors
 	ERR_CHANNEL_IS_FULL = 471,
 	ERR_UNKNOWN_MODE = 472,
 	ERR_INVITE_ONLY_CHAN = 473,
-	ERR_BAD_CHANNEL_KEY = 475,
+	ERR_WRONG_KEY = 475,
 	ERR_BAD_CHAN_MASK = 476,
 	ERR_CHAN_OP_PRIV_NEEDED = 482,
 	ERR_NOT_OP = 491,

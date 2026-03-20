@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 13:08:54 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 18:31:31 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ class Client
 
 		void			topic();
 
+		void			invite();
+
 		void			mode();
 		void			modeInvite(Channel *chanchan);
 		void			modeTopic(Channel *chanchan);
@@ -129,7 +131,7 @@ class Client
 		oss << "Modes:								||" << std::endl;
 		oss << "	i - Invite only					||" << std::endl;
 		oss << "	t - Only ops can change topics	||" << std::endl;
-		oss << "	k - Set/remove channel password	||" << std::endl;
+		oss << "	k - Set/remove channel keyword	||" << std::endl;
 		oss << "	l - Set/remove user limit		||" << std::endl;
 		oss << "	o - Give/take operator status	||" << std::endl;
 		oss << "TOPIC <channel>						|| Sees the channel's topic" << std::endl;

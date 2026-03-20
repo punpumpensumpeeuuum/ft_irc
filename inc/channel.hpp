@@ -6,7 +6,7 @@
 /*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 17:28:31 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/20 18:54:03 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ public:
 
 		Client*					getOnlyClient();
 		void					removeInvited(Client *cli);
+		void					setInvited(Client *cli);
 		void					broadcast(std::string str, Client* except);
 		void					removeClient(Client *cli);
 		void					addKickClient(Client *cli);

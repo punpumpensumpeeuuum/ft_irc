@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 06:27:39 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/20 19:09:24 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ void	Client::printMessage(int nb)
 		case ERR_INVITE_ONLY_CHAN:
 			oss << "Invite only channel\r\n";
 			break;
-		case ERR_BAD_CHANNEL_KEY:
-			oss << "Bad channel key\r\n";
+		case ERR_WRONG_KEY:
+			oss << "Wrong keyword\r\n";
 			break;
 		case ERR_BAD_CHAN_MASK:
 			oss << "Bad channel mask, channel name should start with (#)\r\n";
