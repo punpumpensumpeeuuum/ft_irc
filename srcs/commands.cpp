@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 15:27:52 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:10:47 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,7 +426,6 @@ void	Client::topic()
 	if (arguments.size() < 1)
 		return printMessage(ERR_NEED_MORE_PARAMS);
 	std::string chanchon = arguments[0];
-	std::string	newTopic = arguments[1];
 	std::string message;
 	if (chanchon[0] != '#')
 		return printMessage(ERR_BAD_CHAN_MASK);
@@ -442,8 +441,10 @@ void	Client::topic()
 			break;
 		}
 	}
+	if (!thechan->isAlreadyMember(this))
+		return printMessage(ERR_NOT_ON_CHANNEL);
 	std::string oldTopic = thechan->getTopic();
-	if (arguments.size() == 2)
+	if (arguments.size() == 1)
 	{
 		if (!oldTopic.empty())
 			message = "This channel topic is :" + thechan->getTopic() + "\r\n";
@@ -451,15 +452,19 @@ void	Client::topic()
 			message = "Channel has no topic\r\n";
 		return messageClient(message);
 	}
-	if (!thechan->isOperator(this))
-		return printMessage(ERR_NOT_OP);
-	for (size_t i = 2; i < arguments.size(); i++)
+	if (thechan->isTopicOpOnly())
+	{
+		if (!thechan->isOperator(this))
+			return printMessage(ERR_NOT_OP);
+	}
+	std::string	newTopic;
+	for (size_t i = 1; i < arguments.size(); i++)
 	{
 		newTopic += arguments[i];
 		newTopic += " ";
 	}
 	thechan->setTopic(newTopic);
-	message = this->getNick() + "set channel new topic to :" + thechan->getTopic() + "\r\n";
+	message = this->getNick() + " set channel new topic to :" + thechan->getTopic() + "\r\n";
 	thechan->broadcast(message, NULL);
 }
 
@@ -497,14 +502,35 @@ void Client::modeChannel(Channel *chanchan)
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	std::string message;
 	if (chanchan->getModes().empty())
-		message = "Channel " + chanchan->getName() + " has no modes " + limitStr + chanchan->getPassword() + "\r\n";
+		message = ":" + chanchan->getName() + " 324 " + cnick + " " + chanchan->getName() + " " + chanchan->getModes() + chanchan->getPassword() +"\r\n";
 	else	
-		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + chanchan->getPassword() + "\r\n";
+		message = ":" + chanchan->getName() + " 324 " + cnick + " " + chanchan->getName() + " " + chanchan->getModes() + chanchan->getPassword() +"\r\n";
 	chanchan->broadcast(message, NULL);
 }
 
 // sem args: Channel #alphas modes: +Cnstlk <user_limit> <keyword>
 // 		     Channel #alphas created on Thu Mar 19 13:59:11 2026
+
+void Client::modeTopic(Channel *chanchan)
+{
+	if (!chanchan->isAlreadyMember(this))
+		return printMessage(ERR_NOT_ON_CHANNEL);
+	if (!chanchan->isOperator(this))
+		return printMessage(ERR_NOT_OP);
+	std::string message;
+	chanchan->switchTopic();
+	if (chanchan->isTopicOpOnly())
+	{
+		chanchan->addMode('t');
+		message = this->getNick() + " sets mode +t on " + chanchan->getName() + "\r\n";
+	}
+	else
+	{
+		chanchan->removeMode('t');
+		message = this->getNick() + " sets mode -t on " + chanchan->getName() + "\r\n";
+	}
+	chanchan->broadcast(message, NULL);
+}
 
 void	Client::mode()
 {
@@ -530,9 +556,9 @@ void	Client::mode()
 		case 'i':
 			modeInvite(channel);
 			break;
-		// case 't':
-		// 	modeTopic(channel);
-		// 	break;
+		case 't':
+			modeTopic(channel);
+			break;
 		// case 'k':
 		// 	modeKeyword();
 		// 	break;

@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 15:21:43 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 15:51:43 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Channel::Channel()
 	topic = "";
 	password = "";
 	inviteonly = false;
+	topicOp = false;
 	userlimit = 2;
 	userCount = 0;
 }
@@ -27,6 +28,7 @@ Channel::Channel(std::string n) : name(n)
 	topic = "";
 	password = "";
 	inviteonly = false;
+	topicOp = false;
 	userlimit = 2;
 	userCount = 0;
 }
@@ -35,6 +37,7 @@ Channel::Channel(std::string n, std::string p) : name(n), password(p)
 {
 	topic = "";
 	inviteonly = false;
+	topicOp = false;
 	userlimit = 2;
 	userCount = 0;
 }
@@ -44,6 +47,7 @@ Channel::Channel(const Channel &other)
 	name = other.name;
 	password = other.password;
 	inviteonly = other.inviteonly;
+	topicOp = other.topicOp;
 	userlimit = other.userlimit;
 	userCount = other.userCount;
 	clientmembers = other.clientmembers;
@@ -60,6 +64,7 @@ Channel &Channel::operator=(const Channel &other)
 		name = other.name;
 		password = other.password;
 		inviteonly = other.inviteonly;
+		topicOp = other.topicOp;
 		userlimit = other.userlimit;
 		userCount = other.userCount;
 		clientmembers = other.clientmembers;
@@ -118,6 +123,11 @@ bool		Channel::isAlreadyMember(Client *cli)
 bool		Channel::isInviteOnly()
 {
 	return (this->inviteonly);
+}
+
+bool		Channel::isTopicOpOnly()
+{
+	return (this->topicOp);
 }
 
 bool		Channel::isInvited(Client *cli)
@@ -203,15 +213,20 @@ void	Channel::switchInvite()
 	this->inviteonly = !(this->inviteonly); 
 }
 
+void	Channel::switchTopic()
+{
+	this->topicOp = !(this->topicOp); 
+}
+
 void	Channel::setTopic(std::string nt)
 {
-	nt = this->topic;
+	this->topic = nt;
 }
 
 std::string	Channel::getTopic()
 {
 	if (this->topic.empty())
-		return (NULL);
+		return ("");
 	return (this->topic);
 }
 

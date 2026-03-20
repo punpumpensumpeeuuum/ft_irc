@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 14:24:00 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 15:46:17 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ private:
 	std::string				password;
 	std::string				topic;
 	bool					inviteonly;
+	bool					topicOp;
 	int						userlimit;
 	int						userCount;
 	std::string				modes;
@@ -50,6 +51,7 @@ public:
 		void					setOp(Client* cli);
 		bool					isAlreadyMember(Client* cli);
 		bool					isInviteOnly();
+		bool					isTopicOpOnly();
 		bool					isInvited(Client *cli);
 		bool					isKicked(Client *cli);
 		bool					hasPassword();
@@ -66,6 +68,7 @@ public:
 		void					removeClient(Client *cli);
 		void					addKickClient(Client *cli);
 		void					switchInvite();
+		void					switchTopic();
 
 		void 					addMode(char mode);
 		void 					removeMode(char mode);
