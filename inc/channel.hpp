@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 06:06:28 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/20 14:24:00 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ private:
 	bool					inviteonly;
 	int						userlimit;
 	int						userCount;
+	std::string				modes;
 public:
 		Channel();
 		Channel(std::string n);
@@ -65,6 +66,10 @@ public:
 		void					removeClient(Client *cli);
 		void					addKickClient(Client *cli);
 		void					switchInvite();
+
+		void 					addMode(char mode);
+		void 					removeMode(char mode);
+		std::string				getModes();
 };
 
 #endif
