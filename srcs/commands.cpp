@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 06:28:15 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/20 16:11:15 by marada           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -474,6 +474,29 @@ void	Client::modeInvite(Channel *chanchan)
 	chanchan->broadcast(message, NULL);
 }
 
+void	Client::modeOperator(Channel *chanchan)
+{
+	if (arguments.size() < 3)
+		return ;
+	std::string nome = arguments[2];
+	Client *cleinte = server.getClientByNick(nome);
+	std::string meesage;
+	if (!cleinte)
+		return ;
+	if (!chanchan->isOperator(cleinte))
+	{
+		meesage = this->getNick() + " gives channel operator to " + cleinte->getNick() + "\r\n";
+		chanchan->broadcast(meesage, NULL);
+		chanchan->setOp(cleinte);
+	}
+	else
+	{
+		meesage = this->getNick() + " removes channel operator from " + cleinte->getNick() + "\r\n";
+		chanchan->broadcast(meesage, NULL);
+		chanchan->removeOp(cleinte);
+	}
+}
+
 // void	Client::modeTopic(Channel *chanchan)
 // {
 	// topic ainda nao v\e o mode
@@ -496,7 +519,7 @@ void	Client::mode()
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	// std::msgtobroad = "Channel " + ckitkatkhannel->getName() << " modes: +nao " << channel->getUserLimit << " " << password << "\r\n";
 	char flags = 0;
-	if (arguments.size() == 2)
+	if (arguments.size() >= 2)
 		flags = arguments[1][0];
 	if (!channel->isOperator(this))
 		return printMessage(ERR_NOT_OP);
@@ -514,9 +537,9 @@ void	Client::mode()
 		// case 'l':
 		// 	modeLimit();
 		// 	break;
-		// case 'o':
-		// 	modeOperator();
-		// 	break;
+		case 'o':
+			modeOperator(channel);
+			break;
 		default:
 			return printMessage(ERR_INVALID_INPUT);
 			break;
