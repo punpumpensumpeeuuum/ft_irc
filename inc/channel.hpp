@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 18:40:41 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 06:06:28 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ private:
 	std::set<Client*>		kicked;
 	std::string				name;
 	std::string				password;
+	std::string				topic;
 	bool					inviteonly;
 	int						userlimit;
 	int						userCount;
@@ -55,6 +56,8 @@ public:
 		std::string				getPassword();
 		int						getUserLimit();
 		int						getUserCount();
+		void					setTopic(std::string nt);
+		std::string				getTopic();
 
 		Client*					getOnlyClient();
 		void					removeInvited(Client *cli);

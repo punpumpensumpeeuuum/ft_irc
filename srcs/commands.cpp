@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 19:08:10 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 06:28:15 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,7 +359,7 @@ void	Client::msg()
 	}
 }
 
-void Client::kick() // msg do kick pode ser grande
+void Client::kick()
 {
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
@@ -368,7 +368,7 @@ void Client::kick() // msg do kick pode ser grande
 	std::string channelname = arguments[0];
 	std::string username = arguments[1];
 	std::string message = "";
-	if (arguments.size() == 3)
+	if (arguments.size() == 3) // VER AQUI ISTO
 	{
 		for (size_t i = 2; i < arguments.size(); i++)
 		{
@@ -418,20 +418,70 @@ void Client::kick() // msg do kick pode ser grande
 	else
 		printMessage(KICK_SOMEONE);
 }
+
+void	Client::topic()
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() < 1)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string chanchon = arguments[0];
+	std::string	newTopic = arguments[1];
+	std::string message;
+	if (chanchon[0] != '#')
+		return printMessage(ERR_BAD_CHAN_MASK);
+	if (!channelexist(chanchon))
+		return printMessage(ERR_NO_SUCH_CHANNEL);
+	Channel *thechan = NULL;
+	std::vector<Channel*>& channels = server.getChannelList();
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		if (channels[i]->getName() == chanchon)
+		{
+			thechan = channels[i];
+			break;
+		}
+	}
+	std::string oldTopic = thechan->getTopic();
+	if (arguments.size() == 2)
+	{
+		if (!oldTopic.empty())
+			message = "This channel topic is :" + thechan->getTopic() + "\r\n";
+		else
+			message = "Channel has no topic\r\n";
+		return messageClient(message);
+	}
+	if (!thechan->isOperator(this))
+		return printMessage(ERR_NOT_OP);
+	for (size_t i = 2; i < arguments.size(); i++)
+	{
+		newTopic += arguments[i];
+		newTopic += " ";
+	}
+	thechan->setTopic(newTopic);
+	message = this->getNick() + "set channel new topic to :" + thechan->getTopic() + "\r\n";
+	thechan->broadcast(message, NULL);
+}
+
 void	Client::modeInvite(Channel *chanchan)
 {
 	chanchan->switchInvite();
-	std::string message; //"kun sets mode +i on #ola"
+	std::string message;
 	if (chanchan->isInviteOnly())
 		message = this->getNick() + " sets mode +i on " + chanchan->getName() + "\r\n";
 	else
 		message = this->getNick() + " sets mode -i on " + chanchan->getName() + "\r\n";
 	chanchan->broadcast(message, NULL);
-	return ;
 }
+
+// void	Client::modeTopic(Channel *chanchan)
+// {
+	// topic ainda nao v\e o mode
+	// fazer alguma maneira facil de dar store aos modos ativos, tipo uma string com todos os modos ou algo do genreo
+// }
+
 void	Client::mode()
 {
-	// so pos ops	
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
 	if (arguments.size() < 1)
@@ -443,9 +493,9 @@ void	Client::mode()
 		return printMessage(ERR_NO_SUCH_CHANNEL);
 	Channel *channel = server.findChannel(chanchan);
 	if (!channel->isAlreadyMember(this))
-		return printMessage(ERR_NOT_ON_CHANNEL);//ops
+		return printMessage(ERR_NOT_ON_CHANNEL);
 	// std::msgtobroad = "Channel " + ckitkatkhannel->getName() << " modes: +nao " << channel->getUserLimit << " " << password << "\r\n";
-/*opsopsopsops*/	char flags = 0;
+	char flags = 0;
 	if (arguments.size() == 2)
 		flags = arguments[1][0];
 	if (!channel->isOperator(this))
@@ -456,7 +506,7 @@ void	Client::mode()
 			modeInvite(channel);
 			break;
 		// case 't':
-		// 	modeTopic();
+		// 	modeTopic(channel);
 		// 	break;
 		// case 'k':
 		// 	modeKeyword();

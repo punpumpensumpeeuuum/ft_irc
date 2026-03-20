@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 19:04:12 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 06:27:39 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ void	Client::printMessage(int nb)
 			break;
 		case KICKED_CHANNEL:
 			oss << "You just got kicked from: " << arguments[0] << "\r\n";
+			break;
 		case INVITE_SUCCESS:
 			oss << "You invited " << arguments[0] << " to channel: " << arguments[1] << "\r\n";
 			break;

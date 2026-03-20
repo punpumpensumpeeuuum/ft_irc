@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 15:21:19 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/19 18:41:38 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/20 06:12:33 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,12 +94,14 @@ class Client
 
 		void			kick();
 
+		void			topic();
+
 		void			mode();
 		void			modeInvite(Channel *chanchan);
-		void			modeTopic();
-		void			modeKeyword();
-		void			modeLimit();
-		void			modeOperator();
+		void			modeTopic(Channel *chanchan);
+		void			modeKeyword(Channel *chanchan);
+		void			modeLimit(Channel *chanchan);
+		void			modeOperator(Channel *chanchan);
 
 		void			list();
 };
