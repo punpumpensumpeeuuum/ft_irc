@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 16:22:41 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/23 16:31:10 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -497,7 +497,7 @@ void	Client::topic()
 			message = "Channel has no topic\r\n";
 		return messageClient(message);
 	}
-	if (!thechan->isTopicOpOnly())
+	if (thechan->isTopicOpOnly())
 	{
 		if (!thechan->isOperator(this))
 			return printMessage(ERR_NOT_OP);
@@ -600,10 +600,8 @@ void	Client::modeLimit(Channel *chanchan)
 	int limitInt;
 	ss.eof();
 	ss >> limitInt;
-	if (ss.fail())
+	if (ss.fail() || limitInt <= 0 || limitInt > 2147483647)
 		return ;
-	if (limitInt <= 0)
-			return ;
 	chanchan->setUserLimit(limitInt);
 	std::ostringstream oss;
 	oss << chanchan->getUserLimit();

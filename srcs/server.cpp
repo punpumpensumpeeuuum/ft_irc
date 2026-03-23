@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 16:18:16 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/23 16:35:38 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,7 @@ void		Server::removeChannel(std::string name)
 		if ((*it)->getName() == name)
 		{
 			channelist.erase(it);
+			delete(*it);
 			break;
 		}
 	}
