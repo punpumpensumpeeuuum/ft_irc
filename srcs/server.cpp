@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 16:35:38 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/23 17:13:46 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void Server::handleQuit(int fd)
 			break;
 		}
 	}
-	std::cout << "Client <" << fd << "> disconnected" << std::endl;
+	std::cout << "Client <" << fd << "> Disconnected" << std::endl;
 	close(fd);
 	for (size_t i = 0; i < fds.size(); ++i)
 	{
