@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 17:36:46 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/23 01:52:14 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ void Server::AcceptClient()
 	fds.push_back(NewPoll);
 
 	std::cout << "Client <" << incofd << "> Connected" << std::endl;
+	cli->messageClient("Welcome to the server chan :D Arigato Sarange\r\n");
 }
 
 void	Server::ReceiveData(int fd)

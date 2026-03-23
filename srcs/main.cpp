@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 18:38:14 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/18 19:51:56 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/23 01:46:18 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,3 @@ int main(int ac, char** av)
 	}
 	return (0);
 }
-
-// nao confio no q fiz, vou testar o join em casa :D chan

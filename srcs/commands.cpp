@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 19:33:01 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/23 02:35:14 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,8 @@ void	Client::join()
 		channel->removeInvited(this);
 		joiningMessage(cname, channel);
 		printMessage(JOINED_CHANNEL);
+		if (!channel->getTopic().empty())
+			messageClient("Channel topic is: " + channel->getTopic() + "\r\n");
 	}
 	else
 	{
@@ -368,7 +370,7 @@ void Client::kick()
 	std::string channelname = arguments[0];
 	std::string username = arguments[1];
 	std::string message = "";
-	if (arguments.size() == 3) // VER AQUI ISTO
+	if (arguments.size() >= 3)
 	{
 		for (size_t i = 2; i < arguments.size(); i++)
 		{
@@ -491,7 +493,7 @@ void	Client::topic()
 			message = "Channel has no topic\r\n";
 		return messageClient(message);
 	}
-	if (thechan->isTopicOpOnly())
+	if (!thechan->isTopicOpOnly())
 	{
 		if (!thechan->isOperator(this))
 			return printMessage(ERR_NOT_OP);
@@ -663,7 +665,6 @@ void	Client::mode()
 			modeChannel(channel);
 			break;
 	}
-	//OLa po joinadicionar a verificacao do invite only do keyword e do userlimit e tb ah printar o topic se houver
 }
 
 

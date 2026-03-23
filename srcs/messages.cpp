@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 19:09:24 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/23 02:29:13 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,6 @@ void	Client::printMessage(int nb)
 		case ERR_NO_SUCH_CHANNEL:
 			oss << "No such channel\r\n";
 			break;
-		case ERR_CANNOT_SEND_TO_CHAN:
-			oss << "Cannot send to channel\r\n";
-			break;
-		case ERR_TOO_MANY_CHANNELS:
-			oss << "Too many channels\r\n";
-			break;
 		case ERR_UNKNOWN_COMMAND:
 			oss << "Unknown command or invalid argument\r\n";
 			break;
@@ -62,9 +56,6 @@ void	Client::printMessage(int nb)
 			break;
 		case ERR_NOT_ON_CHANNEL:
 			oss << "Not on channel\r\n";
-			break;
-		case ERR_USER_ALREADY_INVITED:
-			oss << "User is already invited\r\n";
 			break;
 		case ERR_USER_ON_CHANNEL:
 			oss << "User is already on the channel\r\n";
@@ -87,9 +78,6 @@ void	Client::printMessage(int nb)
 		case ERR_CHANNEL_IS_FULL:
 			oss << "Channel is full\r\n";
 			break;
-		case ERR_UNKNOWN_MODE:
-			oss << "Unknown mode\r\n";
-			break;
 		case ERR_INVITE_ONLY_CHAN:
 			oss << "Invite only channel\r\n";
 			break;
@@ -105,33 +93,24 @@ void	Client::printMessage(int nb)
 		case ERR_NOT_OP:
 			oss << "User is not a channel operator\r\n";
 			break;
-		case ERR_USERS_DONT_MATCH:
-			oss << "Users don't match\r\n";
-			break;
-		case ERR_INVALID_INPUT:
-			oss << "Invalid Input\r\n";
-			break;
 		case ERR_ERRONEUS_USER:
 			oss << "Erroneous User\r\n";
 			break;
 		case ERR_ERRONEUS_REAL_NAME:
 			oss << "Erroneous Real Name\r\n";
 			break;
-		case ERR_NO_MESSAGE_GIVEN:
-			oss << "No message given\r\n";
-			break;
 		case PASSWORD_SUCCESS:
-			oss << "001: Correct Password\r\n";
+			oss << ":Correct Password\r\n";
 			break;
 		case NICKNAME_SUCCESS:
-			oss << "001: Nickname assigned: " << cnick << "\r\n";
+			oss << ":Nickname assigned: " << cnick << "\r\n";
 			break;
 		case USERNAME_SUCCESS:
-			oss << "001: Username assigned: " << cuser << "\n";
-			oss << "001: Real name assigned: " << crealname << "\r\n";
+			oss << ":Username assigned: " << cuser << "\n";
+			oss << ":Real name assigned: " << crealname << "\r\n";
 			break;
 		case LOGIN_SUCCESS:
-			oss << "001: Login successful welcome to the server: " << crealname << "\r\n";
+			oss << ":Login successful welcome to the server: " << crealname << "\r\n";
 			break;
 		case CHANNEL_CREATED:
 			oss << "Channel created: " << arguments[0] << "\r\n";
@@ -144,13 +123,6 @@ void	Client::printMessage(int nb)
 			break;
 		case LEAVE_CHANNEL:
 			oss << "You left the channel: " << arguments[0] << "\r\n";
-			break;
-		case SHOWING_CHANNEL_TOPIC:
-			oss << " You are seeing the topic of the channel: " << arguments[0] << "\r\n";
-			break;
-		case CHANNEL_TOPIC_CHANGED:
-			oss << "You are changing the topic of the channel: " << arguments[0] << "\n";
-			oss << "Now it is: " << arguments[1] << "\r\n";
 			break;
 		case KICK_SOMEONE:
 			oss << "You just kicked: " << arguments[1] << "\n";
@@ -169,9 +141,6 @@ void	Client::printMessage(int nb)
 			break;
 		case YOU_WERE_INVITED:
 			oss << "You were invited by " << arguments[0] << " to join channel: " << arguments[1] << "\r\n";
-			break;
-		case MODE_UPDATED:
-			oss << "Channel mode updated: " << arguments[0] << " → " << arguments[1] << "\r\n";
 			break;
 		case PONG:
 			oss << "PONG: " + arguments[0] + "\r\n";
