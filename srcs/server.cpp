@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 01:52:14 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/23 13:04:05 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("FAST");
 	cmdl.push_back("FAST2");
 }
+
+// deviamos fazer com que n desse para fazer users com nomes e nicks iguais
+// encontrei um segfault
 
 Server::Server()
 {

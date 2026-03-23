@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 02:35:14 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/23 13:10:29 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,11 @@ void Client::joiningMessage(const std::string& cname, Channel *channel)
 	this->messageClient(":" + this->cuser + " 324 " + cnick + " " + cname + "\r\n");
 
 	std::ostringstream ts;
-	ts << ":" << this->cuser << " 329 " << cnick << " " << cname << " " << std::time(0) << "\r\n";
+	std::time_t now = std::time(0);
+	std::tm* tm_info = std::localtime(&now);
+	char time_buf[64];
+	std::strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", tm_info);
+	ts << ":" << this->cuser << " 329 " << cnick << " " << cname << " " << time_buf << "\r\n";
 	this->messageClient(ts.str());
 
 	std::string channelnames;
@@ -537,14 +541,13 @@ void Client::modeChannel(Channel *chanchan)
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	std::string message;
 	if (chanchan->getModes().empty())
-		message = "Channel " + chanchan->getName() + " has no modes " + limitStr + chanchan->getKeyword() + "\r\n";
+		message = "Channel " + chanchan->getName() + " modes: +l " + limitStr + " " + chanchan->getKeyword() + "\r\n";
 	else	
-		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + chanchan->getKeyword() + "\r\n";
+		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + " " + chanchan->getKeyword() + "\r\n";
 	chanchan->broadcast(message, NULL);
 }
 
 // sem args: Channel #alphas modes: +Cnstlk <user_limit> <keyword>
-// 		     Channel #alphas created on Thu Mar 19 13:59:11 2026
 
 void Client::modeTopic(Channel *chanchan)
 {
@@ -578,12 +581,14 @@ void	Client::modeOperator(Channel *chanchan)
 		return ;
 	if (!chanchan->isOperator(cleinte))
 	{
+		chanchan->addMode('o');
 		meesage = this->getNick() + " gives channel operator to " + cleinte->getNick() + "\r\n";
 		chanchan->broadcast(meesage, NULL);
 		chanchan->setOp(cleinte);
 	}
 	else
 	{
+		chanchan->removeMode('o');
 		meesage = this->getNick() + " removes channel operator from " + cleinte->getNick() + "\r\n";
 		chanchan->broadcast(meesage, NULL);
 		chanchan->removeOp(cleinte);
@@ -600,11 +605,14 @@ void	Client::modeLimit(Channel *chanchan)
 	ss >> limitInt;
 	if (ss.fail())
 		return ;
+	if (limitInt <= 0)
+			return ;
 	chanchan->setUserLimit(limitInt);
 	std::ostringstream oss;
 	oss << chanchan->getUserLimit();
 	std::string meesage = this->getNick() + " sets channel limit to " + oss.str() + "\r\n";
 	chanchan->broadcast(meesage, NULL);
+
 }
 
 void	Client::modeKeyword(Channel *chanchan)
@@ -613,12 +621,14 @@ void	Client::modeKeyword(Channel *chanchan)
 		return ;
 	if (chanchan->hasKeyword() && arguments[2] == chanchan->getKeyword())
 	{
+		chanchan->removeMode('k');
 		chanchan->setKeyword("");
 		std::string meesage = this->getNick() + " removes channel keyword\r\n";
 		chanchan->broadcast(meesage, NULL);
 	}
 	else
 	{
+		chanchan->addMode('k');
 		chanchan->setKeyword(arguments[2]);
 		std::string meesage = this->getNick() + " sets channel keyword to " + arguments[2] + "\r\n";
 		chanchan->broadcast(meesage, NULL);

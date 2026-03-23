@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 18:54:03 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/23 13:06:37 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CHANNEL_HPP
 
 # include <set>
+# include <ctime>
 # include "messages.hpp"
 # include "client.hpp"
 # include "utils.hpp"
