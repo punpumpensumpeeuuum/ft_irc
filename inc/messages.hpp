@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:59:52 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 02:23:45 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/23 15:42:20 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ enum messages
 	KICK_SOMEONE,
 	KICK_SOMEONE_MESSAGE,
 	FIRST_MESSAGE,
-	YOU_WERE_INVITED,
 	INVITE_SUCCESS,
 	KICKED_CHANNEL,
 };

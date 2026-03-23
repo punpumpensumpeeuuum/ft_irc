@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 13:10:29 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/23 16:22:41 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,25 @@ void	Client::help()
 
 	oss << "PASS <password>						|| Enter server password" << std::endl;
 	oss << "NICK <nickname>						|| Set a new nickname" << std::endl;
-	oss << "USER <username> * * : <realname>	|| Set your username and real name" << std::endl;
+	oss << "USER <username> * * : <realname>	                || Set your username and real name" << std::endl;
 	if (this->authenticatedcheck == true)
 	{
-		oss << "NICK <nickname>						|| Set a new nickname" << std::endl;
 		oss << "PING <token>						|| Ping the server" << std::endl;
 		oss << "QUIT <reason>						|| Leave the server" << std::endl;
 		oss << "JOIN <channel>						|| Join a channel" << std::endl;
 		oss << "PART <channel>						|| Leave a channel" << std::endl;
-		oss << "KICK <channel> <user>				|| Kicks an user from a channel" << std::endl;
-		oss << "INVITE <nick> <channel>				|| Invites an user to a channel" << std::endl;
-		oss << "MSG <nick/channel> : <message>		|| Sends a message to an user or a channel" << std::endl;
-		oss << "MODE <channel> <modes> [params]		|| Changes channel's mode" << std::endl;
-		oss << "Modes:								||" << std::endl;
+		oss << "KICK <channel> <user>	        			|| Kicks an user from a channel" << std::endl;
+		oss << "INVITE <nick> <channel>					|| Invites an user to a channel" << std::endl;
+		oss << "MSG <nick/channel> : <message>				|| Sends a message to an user or a channel" << std::endl;
+		oss << "MODE <channel> <modes> [params]				|| Changes channel's mode" << std::endl;
+		oss << "Modes:							||" << std::endl;
 		oss << "	i - Invite only					||" << std::endl;
-		oss << "	t - Only ops can change topics	||" << std::endl;
-		oss << "	k - Set/remove channel password	||" << std::endl;
-		oss << "	l - Set/remove user limit		||" << std::endl;
-		oss << "	o - Give/take operator status	||" << std::endl;
+		oss << "	t - Only ops can change topics			||" << std::endl;
+		oss << "	k - Set/remove channel password			||" << std::endl;
+		oss << "	l - Set/remove user limit			||" << std::endl;
+		oss << "	o - Give/take operator status			||" << std::endl;
 		oss << "TOPIC <channel>						|| Sees the channel's topic" << std::endl;
-		oss << "TOPIC <channel> <newtopic>			|| Change the channel's topic" << std::endl;
+		oss << "TOPIC <channel> <newtopic>				|| Change the channel's topic" << std::endl;
 	}
 
 	messageClient(oss.str());
@@ -433,7 +432,7 @@ void	Client::invite()
 		return printMessage(ERR_NEED_MORE_PARAMS);
 	std::string	chanchon = arguments[1];	
 	std::string targer = arguments[0];
-	std::string	meesage;
+	std::string	message;
 	if (chanchon[0] != '#')
 		return printMessage(ERR_BAD_CHAN_MASK);
 	if (!channelexist(chanchon))
@@ -459,9 +458,10 @@ void	Client::invite()
 		return ;
 	chanchan->setInvited(target);
 	printMessage(INVITE_SUCCESS);
-	target->printMessage(YOU_WERE_INVITED);
-	meesage = arguments[0] + " has been invited to " + arguments[1] + " by " + this->getNick() + "\r\n";
-	chanchan->broadcast(meesage, NULL);
+	message = "You were invited by " + this->getNick() + " to join channel: " + arguments[1] + "\r\n";
+	target->messageClient(message);
+	message = arguments[0] + " has been invited to " + arguments[1] + " by " + this->getNick() + "\r\n";
+	chanchan->broadcast(message, NULL);
 }
 
 void	Client::topic()
@@ -540,10 +540,7 @@ void Client::modeChannel(Channel *chanchan)
 	if (!chanchan->isAlreadyMember(this))
 		return printMessage(ERR_NOT_ON_CHANNEL);
 	std::string message;
-	if (chanchan->getModes().empty())
-		message = "Channel " + chanchan->getName() + " modes: +l " + limitStr + " " + chanchan->getKeyword() + "\r\n";
-	else	
-		message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + " " + chanchan->getKeyword() + "\r\n";
+	message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + " " + chanchan->getKeyword() + "\r\n";
 	chanchan->broadcast(message, NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 13:04:05 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/23 16:18:16 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,23 @@ bool	Server::signal = true;
 
 void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 {
-	cmdl.push_back("HELP"); // 0 x
-	cmdl.push_back("PASS"); // 1 x
-	cmdl.push_back("NICK"); // 2 x
-	cmdl.push_back("USER"); // 3 x
-	cmdl.push_back("JOIN"); // 4 x
-	cmdl.push_back("QUIT"); // 5 x
-	cmdl.push_back("PART"); // 6 x
-	cmdl.push_back("MSG"); // 7 X
-	cmdl.push_back("PING"); // 8 x
-	cmdl.push_back("KICK"); // 9 x
-	cmdl.push_back("INVITE"); // 10
-	cmdl.push_back("TOPIC"); // 11 X
-	cmdl.push_back("MODE"); // 12  X
-	cmdl.push_back("NAMES"); // 13 x
-	cmdl.push_back("FAST");
-	cmdl.push_back("FAST2");
+	cmdl.push_back("HELP");   // 0 x
+	cmdl.push_back("PASS");   // 1 x
+	cmdl.push_back("NICK");   // 2 x
+	cmdl.push_back("USER");   // 3 x
+	cmdl.push_back("JOIN");   // 4 x
+	cmdl.push_back("QUIT");   // 5 x
+	cmdl.push_back("PART");   // 6 x
+	cmdl.push_back("MSG");    // 7 X
+	cmdl.push_back("PING");   // 8 x
+	cmdl.push_back("KICK");   // 9 x
+	cmdl.push_back("INVITE"); // 10 x
+	cmdl.push_back("TOPIC");  // 11 X
+	cmdl.push_back("MODE");   // 12 X
+	cmdl.push_back("NAMES");  // 13 x
+	cmdl.push_back("FAST");   // 14 x
+	cmdl.push_back("FAST2");  // 15 x
 }
-
-// deviamos fazer com que n desse para fazer users com nomes e nicks iguais
-// encontrei um segfault
 
 Server::Server()
 {

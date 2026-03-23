@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 02:29:13 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/23 15:43:12 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,9 +138,6 @@ void	Client::printMessage(int nb)
 			break;
 		case INVITE_SUCCESS:
 			oss << "You invited " << arguments[0] << " to channel: " << arguments[1] << "\r\n";
-			break;
-		case YOU_WERE_INVITED:
-			oss << "You were invited by " << arguments[0] << " to join channel: " << arguments[1] << "\r\n";
 			break;
 		case PONG:
 			oss << "PONG: " + arguments[0] + "\r\n";

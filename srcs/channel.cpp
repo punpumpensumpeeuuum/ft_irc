@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 18:54:38 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/23 15:52:53 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 Channel::Channel()
 {
-	name = "Channel";
+	name = "";
 	topic = "";
 	keyword = "";
+	modes = "l";
 	inviteonly = false;
 	topicOp = false;
-	userlimit = 2;
+	userlimit = 5;
 	userCount = 0;
 }
 
@@ -27,18 +28,20 @@ Channel::Channel(std::string n) : name(n)
 {
 	topic = "";
 	keyword = "";
+	modes = "l";
 	inviteonly = false;
 	topicOp = false;
-	userlimit = 2;
+	userlimit = 5;
 	userCount = 0;
 }
 
 Channel::Channel(std::string n, std::string p) : name(n), keyword(p)
 {
 	topic = "";
+	modes = "l";
 	inviteonly = false;
 	topicOp = false;
-	userlimit = 2;
+	userlimit = 5;
 	userCount = 0;
 }
 
@@ -55,6 +58,7 @@ Channel::Channel(const Channel &other)
 	operators = other.operators;
 	kicked = other.kicked;
 	topic = other.topic;
+	modes = other.modes;
 }
 
 Channel &Channel::operator=(const Channel &other)
@@ -72,6 +76,7 @@ Channel &Channel::operator=(const Channel &other)
 		operators = other.operators;
 		kicked = other.kicked;
 		topic = other.topic;
+		modes = other.modes;
 	}
 	return (*this);
 }
