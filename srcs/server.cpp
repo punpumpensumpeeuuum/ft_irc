@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/24 01:27:10 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/24 03:41:19 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,11 +304,37 @@ Channel* Server::findChannel(const std::string& name)
 void Server::handleQuit(int fd)
 {
 	std::string nick;
+	Client* cli = getClientByFd(fd);
+	if (!cli)
+		return;
+	nick = cli->getNick();
+	for (std::vector<Channel*>::iterator it = channelist.begin(); it != channelist.end(); ++it)
+	{
+		Channel* chan = *it;
+		if (chan->isAlreadyMember(cli))
+		{
+			chan->broadcast(":" + cli->getNick() + " QUIT :Client disconnected\r\n", cli);
+			Client* newOp = chan->getOnlyClient(cli);
+			chan->removeClient(cli);
+			if (chan->isOperator(cli))
+			{
+				chan->removeOp(cli);
+				if (newOp)
+					chan->setOp(newOp);
+			}
+			if (chan->getUserCount() == 0)
+			{
+				it = channelist.erase(it);
+				delete chan;
+				continue;
+			}
+		}
+		++it;
+	}
 	for (std::vector<Client*>::iterator it = clientlist.begin(); it != clientlist.end(); ++it)
 	{
 		if ((*it)->getFd() == fd)
 		{
-			nick = (*it)->getNick();
 			delete *it;
 			clientlist.erase(it);
 			break;

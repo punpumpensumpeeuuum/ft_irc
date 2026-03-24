@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 15:52:53 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/24 03:21:09 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,9 @@ void	Channel::addKickClient(Client *cli)
 	kicked.insert(cli);
 }
 
-bool	Channel::removeOp(Client *client)
+void	Channel::removeOp(Client *client)
 {
 	size_t removed = operators.erase(client);
-	return (removed > 0);
 }
 
 bool		Channel::isOperator(Client *cli)
@@ -203,7 +202,7 @@ std::vector<Client*>&	Channel::getClients()
 void		Channel::broadcast(std::string str, Client* except)
 {
 	for (std::vector<Client*>::iterator it = clientmembers.begin(); it != clientmembers.end(); ++it)
-    {
+	{
 		if (*it != except)
 			(*it)->messageClient(str);
 	}
@@ -223,10 +222,13 @@ void Channel::removeClient(Client *cli)
 	invitedmembers.erase(cli);
 }
 
-Client*		Channel::getOnlyClient()
+Client*		Channel::getOnlyClient(Client *expection)
 {
-	if (clientmembers.size() == 1)
-		return (clientmembers.front());
+	for (std::vector<Client*>::iterator it = clientmembers.begin(); it != clientmembers.end(); ++it)
+	{
+		if (*it != expection)
+			return (*it);
+	}
 	return (NULL);
 }
 

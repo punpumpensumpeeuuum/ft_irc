@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 18:33:00 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 13:06:37 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/24 03:08:05 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,16 @@ public:
 
 		std::vector<Client*>&	getClients();
 		std::string				getName() const;
-		bool					isOperator(Client* cli);
 		void					addClient(Client* cli);
 		void					setOp(Client* cli);
+		bool					isOperator(Client* cli);
 		bool					isAlreadyMember(Client* cli);
 		bool					isInviteOnly();
 		bool					isTopicOpOnly();
 		bool					isInvited(Client *cli);
 		bool					isKicked(Client *cli);
 		bool					hasKeyword();
-		bool					removeOp(Client *client);
+		void					removeOp(Client *client);
 		std::string				getKeyword();
 		void					setKeyword(std::string str);
 		int						getUserLimit();
@@ -65,7 +65,7 @@ public:
 		void					setTopic(std::string nt);
 		std::string				getTopic();
 
-		Client*					getOnlyClient();
+		Client*					getOnlyClient(Client *expection);
 		void					removeInvited(Client *cli);
 		void					setInvited(Client *cli);
 		void					broadcast(std::string str, Client* except);
