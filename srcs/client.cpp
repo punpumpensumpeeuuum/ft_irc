@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marada <marada@student.42.fr>              +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/20 18:34:21 by marada           ###   ########.fr       */
+/*   Updated: 2026/03/24 01:26:39 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,9 @@ void	Client::handlecmd(std::string c)
 		break;
 	case 15:
 		fast2();
+		break;
+	case 16:
+		notice();
 		break;
 	default:
 		printMessage(ERR_UNKNOWN_COMMAND);

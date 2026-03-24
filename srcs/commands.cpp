@@ -6,7 +6,7 @@
 /*   By: dinda-si <dinda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/05/05 17:15:30 by dinda-si         ###   ########.fr       */
+/*   Updated: 2026/05/05 17:15:37 by dinda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	Client::help()
 		oss << "PART <channel>						|| Leave a channel" << std::endl;
 		oss << "KICK <channel> <user>	        			|| Kicks an user from a channel" << std::endl;
 		oss << "INVITE <nick> <channel>					|| Invites an user to a channel" << std::endl;
-		oss << "MSG <nick/channel> : <message>				|| Sends a message to an user or a channel" << std::endl;
+		oss << "PRIVMSG <nick/channel> : <message>			|| Sends a message to an user or a channel" << std::endl;
 		oss << "MODE <channel> <modes> [params]				|| Changes channel's mode" << std::endl;
 		oss << "Modes:							||" << std::endl;
 		oss << "	i - Invite only					||" << std::endl;
@@ -351,9 +351,7 @@ void	Client::msg()
 		Channel *chacha = server.findChannel(ambiguous);
 		if (!chacha->isAlreadyMember(this))
 			return printMessage(ERR_USER_NOT_IN_CHANNEL);
-		std::vector<Client*>& members = chacha->getClients();
-		for (size_t i = 0; i < members.size(); i++)
-			members[i]->messageClient(truemessage);
+		chacha->broadcast(truemessage, NULL);
 	}
 	else
 	{
@@ -699,4 +697,35 @@ void Client::list()
 		message += "\r\n";
 	}
 	messageClient(message);
+}
+
+void	Client::notice()  // por testar
+{
+	if (!getAuthenticated())
+		return printMessage(ERR_NOT_AUTHENTICATED);
+	if (arguments.size() < 2)
+		return printMessage(ERR_NEED_MORE_PARAMS);
+	std::string	misterious = arguments[0];
+	std::string message;
+	for (size_t i = 1; i < arguments.size(); i++)
+	{
+		message += arguments[i];
+		message += " ";
+	}
+	if (misterious[0] == '#')
+	{
+		if (!channelexist(misterious))
+			return ;
+		Channel *chancha = server.findChannel(misterious);
+		if (!chancha->isAlreadyMember(this))
+			return ;
+		chancha->broadcast(":" + this->getNick() + " NOTICE " + chancha->getName() + " :" + message + "\r\n", this);
+	}
+	else
+	{
+		Client *himher = server.getClientByNick(misterious);
+		if (!himher)
+			return ;
+		himher->messageClient(":" + this->getNick() + " NOTICE " + himher->getNick() + " :" + message + "\r\n");
+	}
 }
