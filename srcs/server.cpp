@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 17:13:46 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/24 01:27:10 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("JOIN");   // 4 x
 	cmdl.push_back("QUIT");   // 5 x
 	cmdl.push_back("PART");   // 6 x
-	cmdl.push_back("MSG");    // 7 X
+	cmdl.push_back("PRIVMSG");// 7 X
 	cmdl.push_back("PING");   // 8 x
 	cmdl.push_back("KICK");   // 9 x
 	cmdl.push_back("INVITE"); // 10 x
@@ -32,6 +32,7 @@ void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 	cmdl.push_back("NAMES");  // 13 x
 	cmdl.push_back("FAST");   // 14 x
 	cmdl.push_back("FAST2");  // 15 x
+	cmdl.push_back("NOTICE"); // 16 x
 }
 
 Server::Server()
