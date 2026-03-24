@@ -6,7 +6,7 @@
 /*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/24 01:34:31 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/24 03:43:28 by buddy2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,7 @@ void	Client::quit()
 		{
 			ch->broadcast(quitMessage, this);
 			ch->removeClient(this);
-			Client* remainingClient = ch->getOnlyClient();
+			Client* remainingClient = ch->getOnlyClient(this);
 			if (remainingClient && !ch->isOperator(remainingClient))
 				ch->setOp(remainingClient);
 		}
@@ -287,14 +287,17 @@ void	Client::part()
 	if (!reason.empty())
 		part_message += " :" + reason;
 	part_message += "\r\n";
+	if (targetchannel->isOperator(this))
+	{
+		Client* remainingClient = targetchannel->getOnlyClient(this);
+		if (remainingClient)
+		{
+			std::cout << remainingClient->getNick() << std::endl;
+			targetchannel->setOp(remainingClient);
+		}
+	}
 	targetchannel->broadcast(part_message, NULL);
 	targetchannel->removeClient(this);
-	if (targetchannel->getUserCount() == 1)
-	{
-		Client* remainingClient = targetchannel->getOnlyClient();
-		if (remainingClient)
-			targetchannel->setOp(remainingClient);
-	}
 	if (targetchannel && targetchannel->getClients().empty())
 	{
 		server.removeChannel(chname);
@@ -406,16 +409,16 @@ void Client::kick()
 	if (!message.empty())
 		kick_msg += " :" + message;
 	kick_msg += "\r\n";
+	if (oldchan->isOperator(this))
+	{
+		Client* remainingClient = oldchan->getOnlyClient(this);
+		if (remainingClient && !oldchan->isOperator(remainingClient))
+			oldchan->setOp(remainingClient);
+	}
 	oldchan->broadcast(kick_msg, NULL);
 	oldchan->addKickClient(target);
 	oldchan->removeClient(target);
 	target->printMessage(KICKED_CHANNEL);
-	if (oldchan->getUserCount() == 1)
-	{
-		Client* remainingClient = oldchan->getOnlyClient();
-		if (remainingClient && !oldchan->isOperator(remainingClient))
-			oldchan->setOp(remainingClient);
-	}
 	if (!message.empty())
 		printMessage(KICK_SOMEONE_MESSAGE);
 	else
@@ -699,6 +702,7 @@ void Client::list()
 	messageClient(message);
 }
 
+// testar tambem sair do server com CtrlC depoois de ter saido e entraod e vario channels, que ainda teem malta ta dentro
 void	Client::notice()  // por testar
 {
 	if (!getAuthenticated())
@@ -719,7 +723,7 @@ void	Client::notice()  // por testar
 		Channel *chancha = server.findChannel(misterious);
 		if (!chancha->isAlreadyMember(this))
 			return ;
-		chancha->broadcast(":" + this->getNick() + " NOTICE " + chancha->getName() + " :" + message + "\r\n", this);
+		chancha->broadcast(":" + this->getNick() + " NOTICE " + chancha->getName() + " :" + message + "\r\n", NULL);
 	}
 	else
 	{
