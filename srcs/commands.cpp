@@ -347,14 +347,14 @@ void	Client::msg()
 		message += " ";
 	}
 	std::string truemessage = ":" + getFullMask() + " MSG " + ambiguous + ": " + message + "\r\n";
-	if (ambiguous[0] == '#') // +-
+	if (ambiguous[0] == '#')
 	{
 		if (!channelexist(ambiguous))
 			return printMessage(ERR_NO_SUCH_CHANNEL);
 		Channel *chacha = server.findChannel(ambiguous);
 		if (!chacha->isAlreadyMember(this))
 			return printMessage(ERR_USER_NOT_IN_CHANNEL);
-		chacha->broadcast(truemessage, NULL);
+		chacha->broadcast(truemessage, this);
 	}
 	else
 	{
@@ -686,6 +686,8 @@ void Client::list()
 	if (!channelexist(channelname))
 		return printMessage(ERR_NO_SUCH_CHANNEL);
 	Channel *channel = server.findChannel(channelname);
+	if (!channel->isAlreadyMember(this))
+		return printMessage(ERR_USER_NOT_IN_CHANNEL);
 	const std::vector<Client*>& members = channel->getClients();
 	std::string message = "Members in " + channelname + ":\r\n";
 	for (size_t i = 0; i < members.size(); i++)
@@ -731,5 +733,6 @@ void	Client::notice()  // por testar
 		if (!himher)
 			return ;
 		himher->messageClient(":" + this->getNick() + " NOTICE " + himher->getNick() + " :" + message + "\r\n");
+		this->messageClient("")
 	}
 }
