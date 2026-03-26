@@ -221,7 +221,7 @@ void	Client::handlecmd(std::string c)
 	case 13:
 		list();
 		break;
-	case 16:
+	case 14:
 		notice();
 		break;
 	default:
