@@ -6,7 +6,7 @@
 /*   By: dinda-si <dinda-si@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/05/05 17:15:47 by dinda-si         ###   ########.fr       */
+/*   Updated: 2026/05/05 17:15:52 by dinda-si         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,24 +306,6 @@ void	Client::ping()
 	return printMessage(PONG);
 }
 
-void	Client::fast()
-{
-	authenticatedcheck = true;
-	cuser = "userum";
-	crealname = "nomerealum";
-	cnick = "nickum";
-	server.setNewcNick(cnick, "nickum");
-}
-
-void	Client::fast2()
-{
-	authenticatedcheck = true;
-	cuser = "userdois";
-	crealname = "nomerealdois";
-	cnick = "nickdois";
-	server.setNewcNick(cnick, "nickdois");
-}
-
 void	Client::msg()
 {
 	if (!getAuthenticated())
@@ -529,8 +511,6 @@ void Client::modeChannel(Channel *chanchan)
 	message = "Channel " + chanchan->getName() + " modes: " + chanchan->getModes() + " " + limitStr + " " + chanchan->getKeyword() + "\r\n";
 	chanchan->broadcast(message, NULL);
 }
-
-// sem args: Channel #alphas modes: +Cnstlk <user_limit> <keyword>
 
 void Client::modeTopic(Channel *chanchan)
 {
