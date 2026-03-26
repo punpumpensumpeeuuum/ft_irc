@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/24 14:07:44 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/26 11:59:21 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,21 @@ bool	Server::signal = true;
 
 void	Server::cmdlistInit(std::vector<std::string>& cmdl)
 {
-	cmdl.push_back("HELP");   // 0 x
-	cmdl.push_back("PASS");   // 1 x
-	cmdl.push_back("NICK");   // 2 x
-	cmdl.push_back("USER");   // 3 x
-	cmdl.push_back("JOIN");   // 4 x
-	cmdl.push_back("QUIT");   // 5 x
-	cmdl.push_back("PART");   // 6 x
-	cmdl.push_back("PRIVMSG");// 7 X
-	cmdl.push_back("PING");   // 8 x
-	cmdl.push_back("KICK");   // 9 x
-	cmdl.push_back("INVITE"); // 10 x
-	cmdl.push_back("TOPIC");  // 11 X
-	cmdl.push_back("MODE");   // 12 X
-	cmdl.push_back("NAMES");  // 13 x
-	cmdl.push_back("FAST");   // 14 x
-	cmdl.push_back("FAST2");  // 15 x
-	cmdl.push_back("NOTICE"); // 16 x
+	cmdl.push_back("HELP");
+	cmdl.push_back("PASS");
+	cmdl.push_back("NICK");
+	cmdl.push_back("USER");
+	cmdl.push_back("JOIN");
+	cmdl.push_back("QUIT");
+	cmdl.push_back("PART");
+	cmdl.push_back("PRIVMSG");
+	cmdl.push_back("PING");
+	cmdl.push_back("KICK");
+	cmdl.push_back("INVITE");
+	cmdl.push_back("TOPIC");
+	cmdl.push_back("MODE");
+	cmdl.push_back("NAMES");
+	cmdl.push_back("NOTICE");
 }
 
 Server::Server()

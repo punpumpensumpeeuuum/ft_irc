@@ -6,7 +6,7 @@
 /*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 19:58:33 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/23 15:43:12 by frteixei         ###   ########.fr       */
+/*   Updated: 2026/03/26 11:53:25 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	Client::messageClient(int nb)
 void	Client::printMessage(int nb)
 {
 	std::ostringstream oss;
-	// oss << ":" << "server" << " " << nb << " " << nick << " :";
 
 	switch (nb)
 	{
