@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 03:39:44 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/24 03:41:19 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/24 14:07:44 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,24 +308,17 @@ void Server::handleQuit(int fd)
 	if (!cli)
 		return;
 	nick = cli->getNick();
-	for (std::vector<Channel*>::iterator it = channelist.begin(); it != channelist.end(); ++it)
+	for (std::vector<Channel*>::iterator it = channelist.begin(); it != channelist.end(); )
 	{
 		Channel* chan = *it;
 		if (chan->isAlreadyMember(cli))
 		{
 			chan->broadcast(":" + cli->getNick() + " QUIT :Client disconnected\r\n", cli);
-			Client* newOp = chan->getOnlyClient(cli);
 			chan->removeClient(cli);
-			if (chan->isOperator(cli))
-			{
-				chan->removeOp(cli);
-				if (newOp)
-					chan->setOp(newOp);
-			}
 			if (chan->getUserCount() == 0)
 			{
-				it = channelist.erase(it);
 				delete chan;
+				it = channelist.erase(it);
 				continue;
 			}
 		}
@@ -341,7 +334,6 @@ void Server::handleQuit(int fd)
 		}
 	}
 	std::cout << "Client <" << fd << "> Disconnected" << std::endl;
-	close(fd);
 	for (size_t i = 0; i < fds.size(); ++i)
 	{
 		if (fds[i].fd == fd)
@@ -353,6 +345,7 @@ void Server::handleQuit(int fd)
 	std::vector<std::string>::iterator itNick = std::find(cNicklist.begin(), cNicklist.end(), nick);
 	if (itNick != cNicklist.end())
 		cNicklist.erase(itNick);
+	close(fd);
 }
 
 void		Server::removeChannel(std::string name)
