@@ -689,8 +689,7 @@ void Client::list()
 	messageClient(message);
 }
 
-// testar tambem sair do server com CtrlC depoois de ter saido e entraod e vario channels, que ainda teem malta ta dentro
-void	Client::notice()  // por testar
+void	Client::notice()
 {
 	if (!getAuthenticated())
 		return printMessage(ERR_NOT_AUTHENTICATED);
