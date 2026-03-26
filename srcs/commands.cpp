@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buddy2 <buddy2@student.42.fr>              +#+  +:+       +#+        */
+/*   By: frteixei <frteixei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 03:02:56 by buddy2            #+#    #+#             */
-/*   Updated: 2026/03/24 03:43:28 by buddy2           ###   ########.fr       */
+/*   Updated: 2026/03/24 13:58:07 by frteixei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,15 +287,6 @@ void	Client::part()
 	if (!reason.empty())
 		part_message += " :" + reason;
 	part_message += "\r\n";
-	if (targetchannel->isOperator(this))
-	{
-		Client* remainingClient = targetchannel->getOnlyClient(this);
-		if (remainingClient)
-		{
-			std::cout << remainingClient->getNick() << std::endl;
-			targetchannel->setOp(remainingClient);
-		}
-	}
 	targetchannel->broadcast(part_message, NULL);
 	targetchannel->removeClient(this);
 	if (targetchannel && targetchannel->getClients().empty())
@@ -346,7 +337,7 @@ void	Client::msg()
 		message += arguments[i];
 		message += " ";
 	}
-	std::string truemessage = ":" + getFullMask() + " MSG " + ambiguous + ": " + message + "\r\n";
+	std::string truemessage = ":" + getFullMask() + " PRIVMSG " + ambiguous + ": " + message + "\r\n";
 	if (ambiguous[0] == '#')
 	{
 		if (!channelexist(ambiguous))
@@ -409,12 +400,6 @@ void Client::kick()
 	if (!message.empty())
 		kick_msg += " :" + message;
 	kick_msg += "\r\n";
-	if (oldchan->isOperator(this))
-	{
-		Client* remainingClient = oldchan->getOnlyClient(this);
-		if (remainingClient && !oldchan->isOperator(remainingClient))
-			oldchan->setOp(remainingClient);
-	}
 	oldchan->broadcast(kick_msg, NULL);
 	oldchan->addKickClient(target);
 	oldchan->removeClient(target);
@@ -725,14 +710,15 @@ void	Client::notice()  // por testar
 		Channel *chancha = server.findChannel(misterious);
 		if (!chancha->isAlreadyMember(this))
 			return ;
-		chancha->broadcast(":" + this->getNick() + " NOTICE " + chancha->getName() + " :" + message + "\r\n", NULL);
+		chancha->broadcast(":" + this->getNick() + "/" + chancha->getName() + " :" + message + "\r\n", NULL);
 	}
 	else
 	{
 		Client *himher = server.getClientByNick(misterious);
 		if (!himher)
 			return ;
-		himher->messageClient(":" + this->getNick() + " NOTICE " + himher->getNick() + " :" + message + "\r\n");
-		this->messageClient("")
+		himher->messageClient(":" + this->getNick() + " :" + message + "\r\n");
+		this->messageClient(":" + himher->getNick() + " :" + message + "\r\n");
 	}
 }
+
